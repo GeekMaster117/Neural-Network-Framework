@@ -1,6 +1,8 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "utils.h"
+
 class Matrix
 {
     private:
@@ -53,12 +55,13 @@ int main()
 
     try
     {
-        matrix -> inputData(arr, 2, 2);
+        matrix -> inputData(arr, 1, 1);
         matrix -> displayData();
     }
     catch(const std::exception& e)
     {
         std::cout << "Caught Exception: " << e.what() << std::endl;
+        printStackTrace();
         return -1;
     }
     

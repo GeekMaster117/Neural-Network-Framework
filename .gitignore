@@ -1,0 +1,38 @@
+# Build files
+/build/
+bin/
+obj/
+out/
+
+# VS Code settings
+.vscode/
+
+# Dependency directories
+/third_party/
+lib/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# C++ compiled files
+*.o
+*.out
+*.exe
+*.obj
+*.so
+*.dylib
+*.dll
+*.a
+
+# Debugging files
+*.gdb
+*.debug
+
+# IDE generated files
+.idea/
+
+# Backup files
+*~
+*.bak
+*.swp

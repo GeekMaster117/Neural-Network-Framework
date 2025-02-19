@@ -40,21 +40,50 @@ class Matrix
                 std::cout << std::endl;
             }
         }
+
+        void add(Matrix* matrix)
+        {
+            if(this -> rows != matrix -> rows || this -> cols != matrix -> cols)
+                throw std::invalid_argument("Matrix Dimensions do not match");
+
+            for(int i = 0; i < this -> rows; ++i)
+                for(int j = 0; j < this -> cols; ++j)
+                    this -> arr[i][j] += matrix -> arr[i][j];
+        }
 };
 
 int main()
 {
-    double** arr = new double*[2];
-    for (int i = 0; i < 2; ++i) 
-        arr[i] = new double[2];
+    double** arr1 = new double*[2];
+    double** arr2 = new double*[2];
+    for (int i = 0; i < 2; ++i)
+    {
+        arr1[i] = new double[2];
+        arr2[i] = new double[2];
+    }
 
-    arr[0][0] = 1.0; arr[0][1] = 2.0;
-    arr[1][0] = 3.0; arr[1][1] = 4.0;
+    for(int i = 0; i < 2; ++i)
+        for(int j = 0; j < 2; ++j)
+        {
+            arr1[i][j] = 1.00;
+            arr2[i][j] = 1.00;
+        }
 
-    Matrix* matrix = new Matrix(2, 2);
+    Matrix* matrix1 = new Matrix(2, 2);
+    Matrix* matrix2 = new Matrix(2, 2);
 
-    matrix -> inputData(arr, 1, 1);
-    matrix -> displayData();
+    matrix1 -> inputData(arr1, 2, 2);
+    matrix1 -> displayData();
+
+    std::cout << std::endl;
+
+    matrix2 -> inputData(arr2, 2, 2);
+    matrix2 -> displayData();
+
+    std::cout << std::endl;
+
+    matrix1 -> add(matrix2);
+    matrix1 -> displayData();
     
     return 0;
 }

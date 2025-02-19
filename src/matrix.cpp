@@ -53,17 +53,8 @@ int main()
 
     Matrix* matrix = new Matrix(2, 2);
 
-    try
-    {
-        matrix -> inputData(arr, 1, 1);
-        matrix -> displayData();
-    }
-    catch(const std::exception& e)
-    {
-        std::cout << "Caught Exception: " << e.what() << std::endl;
-        printStackTrace();
-        return -1;
-    }
+    matrix -> inputData(arr, 1, 1);
+    matrix -> displayData();
     
     return 0;
 }

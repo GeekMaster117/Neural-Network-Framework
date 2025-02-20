@@ -19,8 +19,14 @@ OBJS = ${MATRIX_O} ${CONFIG_O} ${UTILS_O}
 OUT_PATH = ./bin/out
 TARGET = ${OUT_PATH}/nnfs
 
-$(TARGET): $(OBJS)
+$(TARGET): $(OBJ_PATH) $(OUT_PATH) $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) ${OBJS}
+
+$(OBJ_PATH):
+	mkdir -p $(OBJ_PATH)
+
+$(OUT_PATH):
+	mkdir -p $(OUT_PATH)
 
 ${MATRIX_O}: ${MATRIX_CPP} ${UTILS_H}
 	$(CXX) $(CXXFLAGS) -I $(INCLUDE_PATH) -c ${MATRIX_CPP} -o ${MATRIX_O}
@@ -36,3 +42,6 @@ run:
 
 clean:
 	rm -f $(TARGET) $(OBJS)
+
+debug-run:
+	gdb -ex run --args ${TARGET}

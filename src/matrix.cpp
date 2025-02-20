@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <stdexcept>
 
 #include "utils.h"
@@ -6,37 +7,43 @@
 class Matrix
 {
     private:
-        double** arr;
         int rows, cols;
+        std::vector<std::vector<double>> matrix;
 
     public:
-        Matrix(int r, int c): rows(r), cols(c)
+        Matrix(int rows, int cols): rows(rows), cols(cols), matrix(rows, std::vector<double>(cols, 0.00)) {}
+
+        std::vector<std::vector<double>> getVector()
         {
-            this -> arr = new double*[rows];
-            for(int i = 0; i < rows; ++i)
-                this -> arr[i] = new double[cols];
+            return this -> matrix;
         }
 
-        void inputData(double** arr, int rows, int cols)
+        double getValue(int row, int col)
         {
-            if(this -> rows != rows || this -> cols != cols)
+            return this -> matrix[row][col];
+        }
+
+        void inputData(std::vector<std::vector<double>>& matrix)
+        {
+            if(static_cast<size_t>(this -> rows) != matrix.size() || static_cast<size_t>(this -> cols) != matrix[0].size())
                 throw std::invalid_argument("Input Matrix Dimensions "
                 "(" + std::to_string(rows) + ", " + std::to_string(cols) + ")"
                 " do not match with Matrix Dimensions"
                 "(" + std::to_string(this -> rows) + ", " + std::to_string(this -> cols) + ")");
 
-            for(int i = 0; i < rows; ++i)
-                for(int j = 0; j < cols; ++j)
-                    this -> arr[i][j] = arr[i][j];
+            this -> matrix = matrix;
         }
 
         void displayData()
         {
-            for(int i = 0; i < rows; ++i)
+            for (std::vector<double>& row : this -> matrix)
             {
-                std::cout << this -> arr[i][0];
-                for(int j = 1; j < cols; ++j)
-                    std::cout << ", " << this -> arr[i][j];
+                if (!row.empty())
+                {
+                    std::cout << row[0];
+                    for (int i = 1; i < this -> cols; ++i)
+                        std::cout << ", " << row[i];
+                }
                 std::cout << std::endl;
             }
         }
@@ -48,36 +55,31 @@ class Matrix
 
             for(int i = 0; i < this -> rows; ++i)
                 for(int j = 0; j < this -> cols; ++j)
-                    this -> arr[i][j] += matrix -> arr[i][j];
+                    this -> matrix[i][j] += matrix -> getValue(i, j);
         }
 };
 
 int main()
 {
-    double** arr1 = new double*[2];
-    double** arr2 = new double*[2];
-    for (int i = 0; i < 2; ++i)
-    {
-        arr1[i] = new double[2];
-        arr2[i] = new double[2];
-    }
+    std::vector<std::vector<double>> vector1 = std::vector<std::vector<double>>(2, std::vector<double>(2, 0.00));
+    std::vector<std::vector<double>> vector2 = std::vector<std::vector<double>>(2, std::vector<double>(2, 0.00));
 
     for(int i = 0; i < 2; ++i)
         for(int j = 0; j < 2; ++j)
         {
-            arr1[i][j] = 1.00;
-            arr2[i][j] = 1.00;
+            vector1[i][j] = 1.00;
+            vector2[i][j] = 2.00;
         }
 
     Matrix* matrix1 = new Matrix(2, 2);
     Matrix* matrix2 = new Matrix(2, 2);
 
-    matrix1 -> inputData(arr1, 2, 2);
+    matrix1 -> inputData(vector1);
     matrix1 -> displayData();
 
     std::cout << std::endl;
 
-    matrix2 -> inputData(arr2, 2, 2);
+    matrix2 -> inputData(vector2);
     matrix2 -> displayData();
 
     std::cout << std::endl;

@@ -7,7 +7,7 @@ class Matrix
 {
     private:
         int rows, cols;
-        std::vector<std::vector<double>> matrix;
+        std::vector<std::vector<double>> vector;
     public:
         Matrix(int rows, int cols);
         Matrix(int rows, int cols, std::vector<std::vector<double>> vector);
@@ -15,13 +15,14 @@ class Matrix
         std::vector<std::vector<double>> getVector();
         double getValue(int row, int col);
 
-        void inputVector(std::vector<std::vector<double>>& matrix);
+        void inputVector(std::vector<std::vector<double>>& vector);
         void fillMatrix(double number);
 
         void displayData();
 
         Matrix* add(Matrix* matrix);
         Matrix* dot(Matrix* matrix);
+        Matrix* transpose();
 };
 
 #endif

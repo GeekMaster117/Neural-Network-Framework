@@ -4,21 +4,14 @@
 
 int main()
 {
-    Matrix* matrix1 = new Matrix(2, 3);
-    Matrix* matrix2 = new Matrix(3, 2);
+    Matrix* inputs = new Matrix(3, 4);
+    Matrix* weights = new Matrix(3, 4);
 
-    matrix1 -> fillMatrix(2.00);
-    matrix1 -> displayData();
+    inputs -> fillMatrix(2.00);
+    weights -> fillMatrix(4.00);
 
-    std::cout << std::endl;
-
-    matrix2 -> fillMatrix(4.00);
-    matrix2 -> displayData();
-
-    std::cout << std::endl;
-
-    Matrix* dotMatrix = matrix1 -> dot(matrix2);
-    dotMatrix -> displayData();
+    Matrix* outputs = inputs -> dot(weights -> transpose());
+    outputs -> displayData();
     
     return 0;
 }

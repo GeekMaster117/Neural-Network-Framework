@@ -1,0 +1,27 @@
+#include <vector>
+
+#ifndef MATRIX_HPP
+#define MATRIX_HPP
+
+class Matrix
+{
+    private:
+        int rows, cols;
+        std::vector<std::vector<double>> matrix;
+    public:
+        Matrix(int rows, int cols);
+        Matrix(int rows, int cols, std::vector<std::vector<double>> vector);
+        
+        std::vector<std::vector<double>> getVector();
+        double getValue(int row, int col);
+
+        void inputVector(std::vector<std::vector<double>>& matrix);
+        void fillMatrix(double number);
+
+        void displayData();
+
+        Matrix* add(Matrix* matrix);
+        Matrix* dot(Matrix* matrix);
+};
+
+#endif

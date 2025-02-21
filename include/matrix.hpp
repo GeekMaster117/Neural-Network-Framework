@@ -12,6 +12,8 @@ class Matrix
         Matrix(int rows, int cols);
         Matrix(int rows, int cols, std::vector<std::vector<double>> vector);
         
+        int getRows();
+        int getCols();
         std::vector<std::vector<double>> getVector();
         double getValue(int row, int col);
 
@@ -21,6 +23,7 @@ class Matrix
         void displayData();
 
         Matrix* add(Matrix* matrix);
+        Matrix* add(Matrix* matrix, bool broadcast);
         Matrix* dot(Matrix* matrix);
         Matrix* transpose();
 };

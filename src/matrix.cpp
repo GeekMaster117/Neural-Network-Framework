@@ -2,13 +2,24 @@
 
 #include <iostream>
 #include <vector>
-#include <stdexcept>
+
+#include "utils.h"
 
 Matrix::Matrix(int rows, int cols): rows(rows), cols(cols), vector(rows, std::vector<double>(cols, 0.00)) {}
 
 Matrix::Matrix(int rows, int cols, std::vector<std::vector<double>> vector): rows(rows), cols(cols), vector(rows, std::vector<double>(cols, 0.00))
 {
     this -> inputVector(vector);
+}
+
+int Matrix::getRows()
+{
+    return this -> rows;
+}
+
+int Matrix::getCols()
+{
+    return this -> cols;
 }
 
 std::vector<std::vector<double>> Matrix::getVector()
@@ -24,10 +35,7 @@ double Matrix::getValue(int row, int col)
 void Matrix::inputVector(std::vector<std::vector<double>>& vector)
 {
     if(static_cast<size_t>(this -> rows) != vector.size() || static_cast<size_t>(this -> cols) != vector[0].size())
-        throw std::invalid_argument("Input Matrix Dimensions "
-        "(" + std::to_string(vector.size()) + ", " + std::to_string(vector[0].size()) + ")"
-        " do not match with Matrix Dimensions"
-        "(" + std::to_string(this -> rows) + ", " + std::to_string(this -> cols) + ")");
+        throwMismatchDimensionsError(this -> rows, this -> cols, vector.size(), vector[0].size());
 
     this -> vector = vector;
 }
@@ -56,10 +64,7 @@ void Matrix::displayData()
 Matrix* Matrix::add(Matrix* matrix)
 {
     if(this -> rows != matrix -> rows || this -> cols != matrix -> cols)
-        throw std::invalid_argument("Input Matrix Dimensions "
-        "(" + std::to_string(matrix -> rows) + ", " + std::to_string(matrix -> cols) + ")"
-        " do not match with Matrix Dimensions"
-        "(" + std::to_string(this -> rows) + ", " + std::to_string(this -> cols) + ")");
+        throwMismatchDimensionsError(this -> rows, this -> cols, matrix -> rows, matrix -> cols);
 
     std::vector<std::vector<double>> resultVector = std::vector<std::vector<double>>(this -> rows, std::vector<double>(this -> cols, 0.00));
 
@@ -70,13 +75,44 @@ Matrix* Matrix::add(Matrix* matrix)
     return new Matrix(this -> rows, this -> cols, resultVector);
 }
 
+Matrix* Matrix::add(Matrix* matrix, bool broadcast)
+{
+    if(!broadcast || (this -> rows == matrix -> rows && this -> cols == matrix -> cols))
+        return this -> add(matrix);
+
+    if((this -> rows != matrix -> rows && this -> cols != matrix -> cols)
+    ||
+    (this -> rows != 1 && this -> cols != 1 && matrix -> rows != 1 && matrix -> cols != 1))
+        throwCustomMismatchDimensionsError("Neither Matrice could not be broadcast.\n"
+        "Atleast one of the dimensions should be same and the other dimension of the smaller matrix should be 1.", 
+        this -> rows, this -> cols, matrix -> rows, matrix -> cols);
+
+    int resultRows = std::max(this -> rows, matrix -> rows);
+    int resultCols = std::max(this -> cols, matrix -> cols);
+
+    std::vector<std::vector<double>> resultVector = std::vector<std::vector<double>>(resultRows, std::vector<double>(resultCols, 0.00));
+
+    for (int i = 0; i < resultRows; i++) 
+    {
+        for (int j = 0; j < resultCols; j++) 
+        {
+            int thisMatrixRow = (this -> rows == 1) ? 0 : i;
+            int thisMatrixCol = (this -> cols == 1) ? 0 : j;
+            int inputMatrixRow = (matrix -> rows == 1) ? 0 : i;
+            int inputMatrixCol = (matrix -> cols == 1) ? 0 : j;
+
+            resultVector[i][j] = this -> getValue(thisMatrixRow, thisMatrixCol) + matrix -> getValue(inputMatrixRow, inputMatrixCol);
+        }
+    }
+
+    return new Matrix(resultRows, resultCols, resultVector);
+}
+
 Matrix* Matrix::dot(Matrix* matrix)
 {
     if(this -> cols != matrix -> rows)
-        throw std::invalid_argument("Input Matrix Rows "
-        "(" + std::to_string(rows) + ", " + "~)"
-        " do not match with Matrix Columns"
-        "(~" + ", " + std::to_string(this -> cols) + ")");
+        throwCustomMismatchDimensionsError("First Matrix Columns do not match with Second Matrix Rows", 
+        this -> rows, this -> cols, matrix -> rows, matrix -> cols);
 
     std::vector<std::vector<double>> resultVector = std::vector<std::vector<double>>(this -> rows, std::vector<double>(matrix -> cols, 0.00));
 

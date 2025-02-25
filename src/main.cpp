@@ -4,16 +4,19 @@
 
 int main()
 {
-    Matrix* inputs = new Matrix(3, 4);
-    Matrix* weights = new Matrix(3, 4);
-    Matrix* biases = new Matrix(1, 3);
+    Matrix inputs = Matrix(100, 200);
+    Matrix weights = Matrix(100, 200);
+    Matrix biases = Matrix(1, 100);
 
-    inputs -> fillMatrix(2.00);
-    weights -> fillMatrix(4.00);
-    biases -> fillMatrix(3.00);
+    inputs.fillMatrix(2.00);
+    weights.fillMatrix(4.00);
+    biases.fillMatrix(3.00);
 
-    Matrix* outputs = biases -> add(inputs -> dot(weights -> transpose()), true);
-    outputs -> displayData();
+    Matrix weightsTransposed = weights.transpose();
+    Matrix forwardPass = inputs.dot(&weightsTransposed);
+    Matrix outputs = biases.add(&forwardPass, true);
+
+    outputs.displayData();
     
     return 0;
 }

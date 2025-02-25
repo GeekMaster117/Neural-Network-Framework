@@ -6,26 +6,28 @@
 class Matrix
 {
     private:
-        int rows, cols;
-        std::vector<std::vector<double>> vector;
+        unsigned int rows, cols;
+        std::vector<double> vector;
+
+        Matrix(unsigned int rows, unsigned int cols, std::vector<double>& vector);
     public:
-        Matrix(int rows, int cols);
-        Matrix(int rows, int cols, std::vector<std::vector<double>> vector);
+        Matrix(unsigned int rows, unsigned int cols);
+        Matrix(unsigned int rows, unsigned int cols, std::vector<std::vector<double>>& vector);
         
-        int getRows();
-        int getCols();
+        unsigned int getRows();
+        unsigned int getCols();
         std::vector<std::vector<double>> getVector();
-        double getValue(int row, int col);
+        double getValue(unsigned int row, unsigned int col);
 
         void inputVector(std::vector<std::vector<double>>& vector);
-        void fillMatrix(double number);
+        void fillMatrix(double value);
 
         void displayData();
 
-        Matrix* add(Matrix* matrix);
-        Matrix* add(Matrix* matrix, bool broadcast);
-        Matrix* dot(Matrix* matrix);
-        Matrix* transpose();
+        Matrix add(Matrix* matrix);
+        Matrix add(Matrix* matrix, bool broadcast);
+        Matrix dot(Matrix* matrix);
+        Matrix transpose();
 };
 
 #endif

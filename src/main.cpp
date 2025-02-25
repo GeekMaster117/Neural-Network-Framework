@@ -9,6 +9,8 @@ int main()
     Matrix weights = genRandomMatrix(3, 4);
     Matrix biases = genRandomMatrix(1, 3);
 
+    weights = weights.mul(0.01);
+
     Matrix weightsTransposed = weights.transpose();
     Matrix forwardPass = inputs.dot(&weightsTransposed);
     Matrix outputs = biases.add(&forwardPass, true);

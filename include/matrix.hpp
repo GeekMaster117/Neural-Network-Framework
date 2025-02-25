@@ -23,7 +23,7 @@ class Matrix
         void fillMatrix(double value);
 
         void displayData();
-
+        
         Matrix add(Matrix* matrix);
         Matrix add(Matrix* matrix, bool broadcast);
         Matrix dot(Matrix* matrix);

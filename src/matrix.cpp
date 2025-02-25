@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-#include "utils.h"
+#include "error.h"
 #include "config.h"
 
 Matrix::Matrix(unsigned int rows, unsigned int cols, std::vector<double>& vector): rows(rows), cols(cols), vector(vector) {}

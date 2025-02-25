@@ -71,6 +71,17 @@ void Matrix::displayData()
     }
 }
 
+Matrix Matrix::add(double value)
+{
+    std::vector<double> resultVector;
+
+    for(unsigned int i = 0; i < this -> rows; ++i)
+        for(unsigned int j = 0; j < this -> cols; ++j)
+            resultVector.push_back(this -> getValue(i, j) + value);
+
+    return Matrix(this -> getRows(), this -> getCols(), resultVector);
+}
+
 Matrix Matrix::add(Matrix* matrix)
 {
     if(this -> rows != matrix -> rows || this -> cols != matrix -> cols)
@@ -112,6 +123,64 @@ Matrix Matrix::add(Matrix* matrix, bool broadcast)
             unsigned int inputMatrixCol = (matrix -> cols == 1) ? 0 : j;
 
             resultVector.push_back(this -> getValue(thisMatrixRow, thisMatrixCol) + matrix -> getValue(inputMatrixRow, inputMatrixCol));
+        }
+    }
+
+    return Matrix(resultRows, resultCols, resultVector);
+}
+
+Matrix Matrix::mul(double value)
+{
+    std::vector<double> resultVector;
+
+    for(unsigned int i = 0; i < this -> rows; ++i)
+        for(unsigned int j = 0; j < this -> cols; ++j)
+            resultVector.push_back(this -> getValue(i, j) * value);
+
+    return Matrix(this -> getRows(), this -> getCols(), resultVector);
+}
+
+Matrix Matrix::mul(Matrix* matrix)
+{
+    if(this -> rows != matrix -> rows || this -> cols != matrix -> cols)
+        throwMismatchDimensionsError(this -> rows, this -> cols, matrix -> rows, matrix -> cols);
+
+    std::vector<double> resultVector;
+
+    for(unsigned int i = 0; i < this -> rows; ++i)
+        for(unsigned int j = 0; j < this -> cols; ++j)
+            resultVector.push_back(this -> getValue(i, j) * matrix -> getValue(i, j));
+
+    return Matrix(this -> rows, this -> cols, resultVector);
+}
+
+Matrix Matrix::mul(Matrix* matrix, bool broadcast)
+{
+    if(!broadcast || (this -> rows == matrix -> rows && this -> cols == matrix -> cols))
+        return this -> add(matrix);
+
+    if((this -> rows != matrix -> rows && this -> cols != matrix -> cols)
+    ||
+    (this -> rows != 1 && this -> cols != 1 && matrix -> rows != 1 && matrix -> cols != 1))
+        throwCustomMismatchDimensionsError("Neither Matrice could not be broadcast.\n"
+        "Atleast one of the dimensions should be same and the other dimension of the smaller matrix should be 1.", 
+        this -> rows, this -> cols, matrix -> rows, matrix -> cols);
+
+    unsigned int resultRows = std::max(this -> rows, matrix -> rows);
+    unsigned int resultCols = std::max(this -> cols, matrix -> cols);
+
+    std::vector<double> resultVector;
+
+    for (unsigned int i = 0; i < resultRows; ++i) 
+    {
+        for (unsigned int j = 0; j < resultCols; ++j) 
+        {
+            unsigned int thisMatrixRow = (this -> rows == 1) ? 0 : i;
+            unsigned int thisMatrixCol = (this -> cols == 1) ? 0 : j;
+            unsigned int inputMatrixRow = (matrix -> rows == 1) ? 0 : i;
+            unsigned int inputMatrixCol = (matrix -> cols == 1) ? 0 : j;
+
+            resultVector.push_back(this -> getValue(thisMatrixRow, thisMatrixCol) * matrix -> getValue(inputMatrixRow, inputMatrixCol));
         }
     }
 

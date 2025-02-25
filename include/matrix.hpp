@@ -24,9 +24,16 @@ class Matrix
 
         void displayData();
         
+        Matrix add(double value);
         Matrix add(Matrix* matrix);
         Matrix add(Matrix* matrix, bool broadcast);
+
+        Matrix mul(double value);
+        Matrix mul(Matrix* matrix);
+        Matrix mul(Matrix* matrix, bool broadcast);
+
         Matrix dot(Matrix* matrix);
+
         Matrix transpose();
 };
 

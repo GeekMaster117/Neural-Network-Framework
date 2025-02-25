@@ -1,20 +1,13 @@
-#include <iostream>
-
-#include "matrix.hpp"
-#include "layer_utils.h"
+#include "layer.hpp"
 
 int main()
 {
-    Matrix inputs = genRandomMatrix(3, 4);
-    Matrix weights = genRandomMatrix(3, 4);
-    Matrix biases = genRandomMatrix(1, 3);
+    Matrix inputs = Matrix(10, 3);
+    inputs.fillMatrix(1.00);
 
-    weights = weights.mul(0.01);
+    Layer inputLayer = Layer(3, 4);
 
-    Matrix weightsTransposed = weights.transpose();
-    Matrix forwardPass = inputs.dot(&weightsTransposed);
-    Matrix outputs = biases.add(&forwardPass, true);
-
+    Matrix outputs = inputLayer.forward(&inputs);
     outputs.displayData();
     
     return 0;

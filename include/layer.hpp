@@ -13,6 +13,8 @@ class Layer
 
         Matrix getWeights();
         Matrix getBiases();
+
+        Matrix forward(Matrix* inputs);
 };
 
 #endif

@@ -17,3 +17,9 @@ Matrix Layer::getBiases()
 {
     return this -> biases;
 }
+
+Matrix Layer::forward(Matrix* inputs)
+{
+    Matrix forwardPass = inputs -> dot(&(this -> weights));
+    return forwardPass.add(&(this -> biases), true);
+}

@@ -11,15 +11,11 @@ Matrix genRandomMatrix(unsigned int rows, unsigned int cols)
     std::mt19937 gen(rd());
     std::normal_distribution<double> dist(randomGenMean, randomGenStdDeviation(rows));
 
-    std::vector<std::vector<double>> randomVector;
+    std::vector<std::vector<double>> randomVector(rows, std::vector<double>(cols));
     
     for(unsigned int i = 0; i < rows; ++i)
-    {
-        std::vector<double> randomVectorRow;
         for(unsigned int j = 0; j < cols; ++j)
-            randomVectorRow.push_back(dist(gen));
-        randomVector.push_back(randomVectorRow);
-    }
+            randomVector[i][j] = dist(gen);
 
     return Matrix(rows, cols, randomVector);
 }

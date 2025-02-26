@@ -24,7 +24,7 @@ Matrix activationSoftmax(Matrix* inputs)
             max = std::max(max, inputs -> getValue(i, j));
 
         double sum = 0;
-        for(unsigned int j = 1; j < inputs -> getCols(); ++j)
+        for(unsigned int j = 0; j < inputs -> getCols(); ++j)
         {
             double temp = std::exp((inputs -> getValue(i, j)) - max);
             softmaxVector[i][j] = temp;

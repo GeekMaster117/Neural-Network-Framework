@@ -8,9 +8,9 @@
 
 Matrix::Matrix(unsigned int rows, unsigned int cols, std::vector<double>& vector): rows(rows), cols(cols), vector(vector) {}
 
-Matrix::Matrix(unsigned int rows, unsigned int cols): rows(rows), cols(cols), vector(rows * cols, 0.00) {}
+Matrix::Matrix(unsigned int rows, unsigned int cols): rows(rows), cols(cols), vector(rows * cols) {}
 
-Matrix::Matrix(unsigned int rows, unsigned int cols, std::vector<std::vector<double>>& vector): rows(rows), cols(cols)
+Matrix::Matrix(unsigned int rows, unsigned int cols, std::vector<std::vector<double>>& vector): rows(rows), cols(cols), vector(rows * cols)
 {
     this -> inputVector(vector);
 }
@@ -27,11 +27,11 @@ unsigned int Matrix::getCols()
 
 std::vector<std::vector<double>> Matrix::getVector()
 {
-    std::vector<std::vector<double>> resultVector;
+    std::vector<std::vector<double>> resultVector(this -> rows, std::vector<double>(this -> cols));
 
     std::vector<double>::iterator it = this -> vector.begin();
     for(size_t i = 0; i < static_cast<size_t>(this -> rows); ++i, it += static_cast<size_t>(this -> cols))
-        resultVector.push_back(std::vector<double>(it, it + static_cast<size_t>(this -> cols)));
+        resultVector[i] = std::vector<double>(it, it + static_cast<size_t>(this -> cols));
 
     return resultVector;
 }
@@ -46,18 +46,15 @@ void Matrix::inputVector(std::vector<std::vector<double>>& vector)
     if(vector.size() != static_cast<size_t>(this -> rows) || vector[0].size() != static_cast<size_t>(this -> cols))
         throwMismatchDimensionsError(this -> rows, this -> cols, vector.size(), vector[0].size());
 
-    this -> vector.clear();
-
-    for(size_t i = 0; i < this -> rows; ++i)
-        for(size_t j = 0; j < this -> cols; ++j)
+    for(unsigned int i = 0; i < this -> rows; ++i)
+        for(unsigned int j = 0; j < this -> cols; ++j)
             this -> vector[(i * this -> cols) + j] = vector[i][j];
 }
 
 void Matrix::fillMatrix(double value)
 {
-    for(unsigned int i = 0; i < this -> rows; ++i)
-        for(unsigned j = 0; j < this -> cols; ++j)
-            this -> vector[(i * this -> cols) + j] = value;
+    for(unsigned int i = 0; i < (this -> rows) * (this -> cols); ++i)
+            this -> vector[i] = value;
 }
 
 void Matrix::displayData()
@@ -77,9 +74,8 @@ Matrix Matrix::add(double value)
 {
     std::vector<double> resultVector((this -> rows) * (this -> cols));
 
-    for(unsigned int i = 0; i < this -> rows; ++i)
-        for(unsigned int j = 0; j < this -> cols; ++j)
-            resultVector[(i * this -> cols) + j] = (this -> getValue(i, j)) + value;
+    for(unsigned int i = 0; i < (this -> rows) * (this -> cols); ++i)
+            resultVector[i] = (this -> vector[i]) + value;
 
     return Matrix(this -> getRows(), this -> getCols(), resultVector);
 }
@@ -89,11 +85,10 @@ Matrix Matrix::add(Matrix* matrix)
     if(this -> rows != matrix -> rows || this -> cols != matrix -> cols)
         throwMismatchDimensionsError(this -> rows, this -> cols, matrix -> rows, matrix -> cols);
 
-    std::vector<double> resultVector;
+    std::vector<double> resultVector((this -> rows) * (this -> cols));
 
-    for(unsigned int i = 0; i < this -> rows; ++i)
-        for(unsigned int j = 0; j < this -> cols; ++j)
-            resultVector.push_back(this -> getValue(i, j) + matrix -> getValue(i, j));
+    for(unsigned int i = 0; i < (this -> rows) * (this -> cols); ++i)
+            resultVector[i] = (this -> vector[i]) + (matrix -> vector[i]);
 
     return Matrix(this -> rows, this -> cols, resultVector);
 }
@@ -113,7 +108,7 @@ Matrix Matrix::add(Matrix* matrix, bool broadcast)
     unsigned int resultRows = std::max(this -> rows, matrix -> rows);
     unsigned int resultCols = std::max(this -> cols, matrix -> cols);
 
-    std::vector<double> resultVector;
+    std::vector<double> resultVector(resultRows * resultCols);
 
     for (unsigned int i = 0; i < resultRows; ++i) 
     {
@@ -124,7 +119,8 @@ Matrix Matrix::add(Matrix* matrix, bool broadcast)
             unsigned int inputMatrixRow = (matrix -> rows == 1) ? 0 : i;
             unsigned int inputMatrixCol = (matrix -> cols == 1) ? 0 : j;
 
-            resultVector.push_back(this -> getValue(thisMatrixRow, thisMatrixCol) + matrix -> getValue(inputMatrixRow, inputMatrixCol));
+            resultVector[(i * this -> cols) + j] = this -> vector[(thisMatrixRow * this -> cols) + thisMatrixCol] + 
+            matrix -> vector[(inputMatrixRow * this -> cols) + inputMatrixCol];
         }
     }
 
@@ -133,11 +129,10 @@ Matrix Matrix::add(Matrix* matrix, bool broadcast)
 
 Matrix Matrix::sub(double value)
 {
-    std::vector<double> resultVector;
+    std::vector<double> resultVector((this -> rows) * (this -> cols));
 
-    for(unsigned int i = 0; i < this -> rows; ++i)
-        for(unsigned int j = 0; j < this -> cols; ++j)
-            resultVector.push_back(this -> getValue(i, j) - value);
+    for(unsigned int i = 0; i < (this -> rows) * (this -> cols); ++i)
+            resultVector[i] = (this -> vector[i]) - value;
 
     return Matrix(this -> getRows(), this -> getCols(), resultVector);
 }
@@ -147,11 +142,10 @@ Matrix Matrix::sub(Matrix* matrix)
     if(this -> rows != matrix -> rows || this -> cols != matrix -> cols)
         throwMismatchDimensionsError(this -> rows, this -> cols, matrix -> rows, matrix -> cols);
 
-    std::vector<double> resultVector;
+    std::vector<double> resultVector((this -> rows) * (this -> cols));
 
-    for(unsigned int i = 0; i < this -> rows; ++i)
-        for(unsigned int j = 0; j < this -> cols; ++j)
-            resultVector.push_back(this -> getValue(i, j) - matrix -> getValue(i, j));
+    for(unsigned int i = 0; i < (this -> rows) * (this -> cols); ++i)
+            resultVector[i] = (this -> vector[i]) - (matrix -> vector[i]);
 
     return Matrix(this -> rows, this -> cols, resultVector);
 }
@@ -171,7 +165,7 @@ Matrix Matrix::sub(Matrix* matrix, bool broadcast)
     unsigned int resultRows = std::max(this -> rows, matrix -> rows);
     unsigned int resultCols = std::max(this -> cols, matrix -> cols);
 
-    std::vector<double> resultVector;
+    std::vector<double> resultVector(resultRows * resultCols);
 
     for (unsigned int i = 0; i < resultRows; ++i) 
     {
@@ -182,7 +176,8 @@ Matrix Matrix::sub(Matrix* matrix, bool broadcast)
             unsigned int inputMatrixRow = (matrix -> rows == 1) ? 0 : i;
             unsigned int inputMatrixCol = (matrix -> cols == 1) ? 0 : j;
 
-            resultVector.push_back(this -> getValue(thisMatrixRow, thisMatrixCol) - matrix -> getValue(inputMatrixRow, inputMatrixCol));
+            resultVector[(i * this -> cols) + j] = this -> vector[(thisMatrixRow * this -> cols) + thisMatrixCol] -
+            matrix -> vector[(inputMatrixRow * this -> cols) + inputMatrixCol];
         }
     }
 
@@ -191,11 +186,10 @@ Matrix Matrix::sub(Matrix* matrix, bool broadcast)
 
 Matrix Matrix::mul(double value)
 {
-    std::vector<double> resultVector;
+    std::vector<double> resultVector((this -> rows) * (this -> cols));
 
-    for(unsigned int i = 0; i < this -> rows; ++i)
-        for(unsigned int j = 0; j < this -> cols; ++j)
-            resultVector.push_back(this -> getValue(i, j) * value);
+    for(unsigned int i = 0; i < (this -> rows) * (this -> cols); ++i)
+            resultVector[i] = (this -> vector[i]) * value;
 
     return Matrix(this -> getRows(), this -> getCols(), resultVector);
 }
@@ -205,11 +199,10 @@ Matrix Matrix::mul(Matrix* matrix)
     if(this -> rows != matrix -> rows || this -> cols != matrix -> cols)
         throwMismatchDimensionsError(this -> rows, this -> cols, matrix -> rows, matrix -> cols);
 
-    std::vector<double> resultVector;
+    std::vector<double> resultVector((this -> rows) * (this -> cols));
 
-    for(unsigned int i = 0; i < this -> rows; ++i)
-        for(unsigned int j = 0; j < this -> cols; ++j)
-            resultVector.push_back(this -> getValue(i, j) * matrix -> getValue(i, j));
+    for(unsigned int i = 0; i < (this -> rows) * (this -> cols); ++i)
+            resultVector[i] = (this -> vector[i]) * (matrix -> vector[i]);
 
     return Matrix(this -> rows, this -> cols, resultVector);
 }
@@ -229,7 +222,7 @@ Matrix Matrix::mul(Matrix* matrix, bool broadcast)
     unsigned int resultRows = std::max(this -> rows, matrix -> rows);
     unsigned int resultCols = std::max(this -> cols, matrix -> cols);
 
-    std::vector<double> resultVector;
+    std::vector<double> resultVector(resultRows * resultCols);
 
     for (unsigned int i = 0; i < resultRows; ++i) 
     {
@@ -240,7 +233,8 @@ Matrix Matrix::mul(Matrix* matrix, bool broadcast)
             unsigned int inputMatrixRow = (matrix -> rows == 1) ? 0 : i;
             unsigned int inputMatrixCol = (matrix -> cols == 1) ? 0 : j;
 
-            resultVector.push_back(this -> getValue(thisMatrixRow, thisMatrixCol) * matrix -> getValue(inputMatrixRow, inputMatrixCol));
+            resultVector[(i * this -> cols) + j] = this -> vector[(thisMatrixRow * this -> cols) + thisMatrixCol] *
+            matrix -> vector[(inputMatrixRow * this -> cols) + inputMatrixCol];
         }
     }
 
@@ -253,17 +247,18 @@ Matrix Matrix::dot(Matrix* matrix)
         throwCustomMismatchDimensionsError("Matrix Columns do not match with Input Matrix Rows", 
         this -> rows, this -> cols, matrix -> rows, matrix -> cols);
 
-    std::vector<std::vector<double>> resultVector = std::vector<std::vector<double>>(this -> rows, std::vector<double>(matrix -> cols, 0.00));
+    std::vector<double> resultVector((this -> rows) * (matrix -> cols));
 
     for(unsigned int i = 0; i < this -> rows; i += dotMulBlockSize)
         for(unsigned int j = 0; j < matrix -> cols; j += dotMulBlockSize)
             for(unsigned int k = 0; k < this -> cols; k += dotMulBlockSize)
             {
-                for(unsigned int x = i; x < std::min(x + dotMulBlockSize, this -> rows); ++x)
-                    for(unsigned int y = j; y < std::min(y + dotMulBlockSize, matrix -> cols); ++y)
-                        for(unsigned int z = k; z < std::min(z + dotMulBlockSize, this -> cols); ++z)
+                for(unsigned int x = i; x < std::min(i + dotMulBlockSize, this -> rows); ++x)
+                    for(unsigned int y = j; y < std::min(j + dotMulBlockSize, matrix -> cols); ++y)
+                        for(unsigned int z = k; z < std::min(k + dotMulBlockSize, this -> cols); ++z)
                         {
-                            resultVector[x][y] += this -> getValue(x, z) * matrix -> getValue(z, y);
+                            resultVector[(x * matrix -> cols) + y] += this -> vector[(x * this -> cols) + z] *
+                            matrix -> vector[(z * matrix -> cols) + y];
                         }
             }
 
@@ -272,11 +267,11 @@ Matrix Matrix::dot(Matrix* matrix)
 
 Matrix Matrix::transpose()
 {
-    std::vector<std::vector<double>> resultVector = std::vector<std::vector<double>>(this -> cols, std::vector<double>(this -> rows, 0.00));
+    std::vector<double> resultVector((this -> rows) * (this -> cols));
 
     for(unsigned int i = 0; i < this -> rows; ++i)
         for(unsigned int j = 0; j < this -> cols; ++j)
-            resultVector[j][i] = this -> getValue(i, j);
+            resultVector[(j * this -> rows) + i] = this -> vector[(i * this -> cols) + j];
 
     return Matrix(this -> cols, this -> rows, resultVector);
 }

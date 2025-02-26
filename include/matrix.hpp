@@ -16,6 +16,7 @@ class Matrix
         
         unsigned int getRows();
         unsigned int getCols();
+
         std::vector<std::vector<double>> getVector();
         double getValue(unsigned int row, unsigned int col);
 
@@ -27,6 +28,10 @@ class Matrix
         Matrix add(double value);
         Matrix add(Matrix* matrix);
         Matrix add(Matrix* matrix, bool broadcast);
+
+        Matrix sub(double value);
+        Matrix sub(Matrix* matrix);
+        Matrix sub(Matrix* matrix, bool broadcast);
 
         Matrix mul(double value);
         Matrix mul(Matrix* matrix);

@@ -36,3 +36,6 @@ Thumbs.db
 *~
 *.bak
 *.swp
+
+# Data
+*.csv

@@ -25,3 +25,8 @@ void throwValueCannotBeGreaterError(int value, int threshold)
 {
     throw std::invalid_argument("Value " + std::to_string(value) + " cannot be greater than " + std::to_string(threshold));
 }
+
+void throwDatasetEmptyError()
+{
+    throw std::runtime_error("Requested dataset is empty");
+}

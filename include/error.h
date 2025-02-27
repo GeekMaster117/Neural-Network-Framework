@@ -11,4 +11,6 @@ void throwFileCannotBeOpenedError(std::string filename);
 
 void throwValueCannotBeGreaterError(int value, int threshold);
 
+void throwDatasetEmptyError();
+
 #endif

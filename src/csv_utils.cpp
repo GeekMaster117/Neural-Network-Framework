@@ -6,14 +6,16 @@
 #include "config.h"
 #include "error.h"
 
-std::vector<std::vector<std::string>> readCSV(unsigned int startIndex, unsigned int endIndex)
+std::vector<std::vector<std::string>> readDataset(unsigned int startIndex, unsigned int endIndex, bool isTrainDataset)
 {
     if(startIndex >= endIndex)
         throwValueCannotBeGreaterError(startIndex, endIndex);
 
-    std::ifstream file(trainDataset);
+    std::string datasetName = isTrainDataset ? trainDataset : testDataset;
+
+    std::ifstream file(datasetName);
     if(!file.is_open())
-        throwFileCannotBeOpenedError(trainDataset);
+        throwFileCannotBeOpenedError(datasetName);
 
     unsigned int sampleSize = 0;
 
@@ -21,6 +23,9 @@ std::vector<std::vector<std::string>> readCSV(unsigned int startIndex, unsigned 
 
     if(std::getline(file, line))
     {
+        if(line.empty())
+            throwDatasetEmptyError();
+
         std::stringstream ss(line);
         std::string cell;
         for(; std::getline(ss, cell, ','); ++sampleSize);
@@ -50,6 +55,9 @@ std::vector<std::vector<std::string>> readCSV(unsigned int startIndex, unsigned 
     }
 
     file.close();
+
+    if(dataset.empty())
+        throwDatasetEmptyError();
 
     return dataset;
 }

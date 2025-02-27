@@ -9,7 +9,7 @@
 std::vector<std::vector<std::string>> readDataset(unsigned int startIndex, unsigned int endIndex, bool isTrainDataset)
 {
     if(startIndex >= endIndex)
-        throwValueCannotBeGreaterError(startIndex, endIndex);
+        throwValueCannotBeGreaterError("StartIndex", startIndex, "EndIndex", endIndex);
 
     std::string datasetName = isTrainDataset ? trainDataset : testDataset;
 
@@ -60,4 +60,71 @@ std::vector<std::vector<std::string>> readDataset(unsigned int startIndex, unsig
         throwDatasetEmptyError();
 
     return dataset;
+}
+
+unsigned int getDatasetSize(bool isTrainDataset)
+{
+    std::string datasetName = isTrainDataset ? trainDataset : testDataset;
+
+    std::ifstream file(datasetName);
+    if(!file.is_open())
+        throwFileCannotBeOpenedError(datasetName);
+
+    std::string line;
+
+    if(std::getline(file, line))
+        if(line.empty())
+            throwDatasetEmptyError();
+
+    unsigned int size = 0;
+    for(; std::getline(file, line); ++size)
+        if(line.empty())
+        {
+            --size;
+            continue;
+        }
+
+    return size;
+}
+
+unsigned int getDatasetSampleSize()
+{
+    std::ifstream file(trainDataset);
+    if(!file.is_open())
+        throwFileCannotBeOpenedError(trainDataset);
+
+    std::string line;
+
+    unsigned int size = -1;
+    if(std::getline(file, line))
+    {
+        if(line.empty())
+            throwDatasetEmptyError();
+
+        std::stringstream ss(line);
+        std::string cell;
+        for(; std::getline(ss, cell, ','); ++size);
+    }
+
+    return size;
+}
+
+unsigned int getBatchCount(bool isTrainDataset)
+{
+    unsigned int datasetSize = getDatasetSize(isTrainDataset);
+    
+    unsigned int batchCount = datasetSize % batchSize == 0 ? 0 : 1;
+    batchCount += datasetSize / batchSize;
+
+    return batchCount;
+}
+
+std::vector<std::vector<std::string>> getDatasetBatch(unsigned int batchIndex, bool isTrainDataset)
+{
+    unsigned int batchCount = getBatchCount(isTrainDataset);
+    if(batchIndex >= batchCount)
+        throwValueCannotBeGreaterError("BatchIndex", batchIndex, "BatchCount", batchCount);
+
+    unsigned int datasetSize = getDatasetSize(isTrainDataset);
+    return readDataset(batchIndex * batchSize, std::min((batchIndex * batchSize) + batchSize, datasetSize), isTrainDataset);
 }

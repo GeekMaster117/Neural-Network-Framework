@@ -11,4 +11,6 @@ double randomGenStdDeviation(unsigned int inputs);
 extern const std::string trainDataset;
 extern const std::string testDataset;
 
+extern const unsigned int batchSize;
+
 #endif

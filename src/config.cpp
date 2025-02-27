@@ -1,5 +1,7 @@
 #include "config.h"
+
 #include <math.h>
+#include <string>
 
 const unsigned int dotMulBlockSize = 32;
 
@@ -8,3 +10,6 @@ double randomGenStdDeviation(unsigned int inputs)
 {
     return std::sqrt(2.00 / inputs);
 }
+
+const std::string trainDataset = "data/mnist_train.csv";
+const std::string testDataset = "data/mnist_test.csv";

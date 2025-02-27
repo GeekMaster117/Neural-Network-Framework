@@ -1,10 +1,11 @@
 CXX = g++
-CXXFLAGS = -Wall -g
+CXXFLAGS = -std=c++17 -Wall -g
 
 INCLUDE_PATH = ./include
 MATRIX_HPP = ${INCLUDE_PATH}/matrix.hpp
 LAYER_HPP = ${INCLUDE_PATH}/layer.hpp
 LAYER_UTILS_H = ${INCLUDE_PATH}/layer_utils.h
+CSV_UTILS_H = ${INCLUDE_PATH}/csv_utils.h
 ACTIVATION_H = ${INCLUDE_PATH}/activation.h
 CONFIG_H = ${INCLUDE_PATH}/config.h
 ERROR_H = ${INCLUDE_PATH}/error.h
@@ -14,6 +15,7 @@ MAIN_CPP = ${SRC_PATH}/main.cpp
 MATRIX_CPP = ${SRC_PATH}/matrix.cpp
 LAYER_CPP = ${SRC_PATH}/layer.cpp
 LAYER_UTILS_CPP = ${SRC_PATH}/layer_utils.cpp
+CSV_UTILS_CPP = ${SRC_PATH}/csv_utils.cpp
 ACTIVATION_CPP = ${SRC_PATH}/activation.cpp
 CONFIG_CPP = ${SRC_PATH}/config.cpp
 ERROR_CPP = ${SRC_PATH}/error.cpp
@@ -23,11 +25,12 @@ MAIN_O = ${OBJ_PATH}/main.o
 MATRIX_O = ${OBJ_PATH}/matrix.o
 LAYER_O = ${OBJ_PATH}/layer.o
 LAYER_UTILS_O = ${OBJ_PATH}/layer_utils.o
+CSV_UTILS_O = ${OBJ_PATH}/csv_utils.o
 ACTIVATION_O = ${OBJ_PATH}/activation.o
 CONFIG_O = ${OBJ_PATH}/config.o
 ERROR_O = ${OBJ_PATH}/error.o
 
-OBJS = ${MAIN_O} ${MATRIX_O} ${LAYER_O} ${LAYER_UTILS_O} ${ACTIVATION_O} ${CONFIG_O} ${ERROR_O}
+OBJS = ${MAIN_O} ${MATRIX_O} ${LAYER_O} ${LAYER_UTILS_O} ${CSV_UTILS_O} ${ACTIVATION_O} ${CONFIG_O} ${ERROR_O}
 
 OUT_PATH = ./bin/out
 TARGET = ${OUT_PATH}/nnfs
@@ -52,6 +55,9 @@ ${LAYER_O}: ${LAYER_CPP} ${LAYER_HPP} ${LAYER_UTILS_H} ${MATRIX_HPP}
 
 ${LAYER_UTILS_O}: ${LAYER_UTILS_CPP} ${LAYER_UTILS_H} ${CONFIG_H}
 	${CXX} ${CXXFLAGS} -I ${INCLUDE_PATH} -c ${LAYER_UTILS_CPP} -o ${LAYER_UTILS_O}
+
+${CSV_UTILS_O}: ${CSV_UTILS_CPP} ${CSV_UTILS_H} ${CONFIG_H} ${ERROR_H}
+	${CXX} ${CXXFLAGS} -I ${INCLUDE_PATH} -c ${CSV_UTILS_CPP} -o ${CSV_UTILS_O}
 
 ${ACTIVATION_O}: ${ACTIVATION_CPP} ${ACTIVATION_H}
 	${CXX} ${CXXFLAGS} -I ${INCLUDE_PATH} -c ${ACTIVATION_CPP} -o ${ACTIVATION_O}

@@ -31,7 +31,7 @@ std::vector<std::vector<std::string>> readDataset(unsigned int startIndex, unsig
         for(; std::getline(ss, cell, ','); ++sampleSize);
     }
 
-    std::vector<std::vector<std::string>> dataset = std::vector(endIndex - startIndex, std::vector<std::string>(sampleSize));
+    std::vector<std::vector<std::string>> dataset(endIndex - startIndex, std::vector<std::string>(sampleSize));
     for(unsigned int currentIndex = 0; std::getline(file, line); ++currentIndex) 
     {
         if(currentIndex < startIndex)
@@ -127,4 +127,30 @@ std::vector<std::vector<std::string>> getDatasetBatch(unsigned int batchIndex, b
 
     unsigned int datasetSize = getDatasetSize(isTrainDataset);
     return readDataset(batchIndex * batchSize, std::min((batchIndex * batchSize) + batchSize, datasetSize), isTrainDataset);
+}
+
+std::vector<std::string> getLabels(unsigned int batchIndex, bool isTrainDataset)
+{
+    std::vector<std::vector<std::string>> datasetBatch = getDatasetBatch(batchIndex, isTrainDataset);
+ 
+    std::vector<std::string> labels;
+    for(size_t i = 0; i < datasetBatch.size(); ++i)
+        labels.push_back(datasetBatch[i][0]);
+
+    return labels;
+}
+
+std::vector<std::vector<std::string>> getSamples(unsigned int batchIndex, bool isTrainDataset)
+{
+    std::vector<std::vector<std::string>> datasetBatch = getDatasetBatch(batchIndex, isTrainDataset);
+
+    std::vector<std::vector<std::string>> samples;
+    for(size_t i = 0; i < datasetBatch.size(); ++i)
+    {
+        std::vector<std::string>::iterator begin = datasetBatch[i].begin() + 1;
+        std::vector<std::string>::iterator end = datasetBatch[i].end();
+        samples.push_back(std::vector<std::string>(begin, end));
+    }
+
+    return samples;
 }

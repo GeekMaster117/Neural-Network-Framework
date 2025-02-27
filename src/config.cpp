@@ -14,4 +14,4 @@ double randomGenStdDeviation(unsigned int inputs)
 const std::string trainDataset = "data/mnist_train.csv";
 const std::string testDataset = "data/mnist_test.csv";
 
-const unsigned int batchSize = 128;
+const unsigned int batchSize = 5;

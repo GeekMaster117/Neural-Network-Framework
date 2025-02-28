@@ -70,14 +70,11 @@ Matrix readDataset(unsigned int startIndex, unsigned int endIndex, bool isTrainD
         if(line.empty())
             throwDatasetEmptyError();
 
-    std::vector<std::vector<double>> dataset(endIndex - startIndex, std::vector<double>(getDatasetSampleSize()));
+    std::vector<std::vector<double>> dataset(std::min(endIndex - startIndex, getDatasetSize(isTrainDataset) - startIndex), std::vector<double>(getDatasetSampleSize()));
     for(unsigned int currentIndex = 0; std::getline(file, line); ++currentIndex) 
     {
         if(currentIndex < startIndex)
-        {
-            --currentIndex;
             continue;
-        }
         if(currentIndex >= endIndex)
             break;
 
@@ -98,7 +95,7 @@ Matrix readDataset(unsigned int startIndex, unsigned int endIndex, bool isTrainD
     if(dataset.empty())
         throwDatasetEmptyError();
 
-    return Matrix(endIndex - startIndex, getDatasetSampleSize(), dataset);
+    return Matrix(std::min(endIndex - startIndex, getDatasetSize(isTrainDataset) - startIndex), getDatasetSampleSize(), dataset);
 }
 
 unsigned int getBatchCount(bool isTrainDataset)
@@ -125,13 +122,9 @@ Matrix getLabels(unsigned int batchIndex, bool isTrainDataset)
 {
     Matrix datasetBatch = getDatasetBatch(batchIndex, isTrainDataset);
  
-    std::vector<std::vector<double>> labels;
+    std::vector<std::vector<double>> labels(datasetBatch.getRows(), std::vector<double>(1));
     for(unsigned int i = 0; i < datasetBatch.getRows(); ++i)
-    {
-        std::vector<double> label(1);
-        label[0] = datasetBatch.getValue(i, 0);
-        labels.push_back(label);
-    }
+        labels[i][0] = datasetBatch.getValue(i, 0);
 
     return Matrix(datasetBatch.getRows(), 1, labels);
 }
@@ -140,14 +133,10 @@ Matrix getSamples(unsigned int batchIndex, bool isTrainDataset)
 {
     Matrix datasetBatch = getDatasetBatch(batchIndex, isTrainDataset);
 
-    std::vector<std::vector<double>> samples;
+    std::vector<std::vector<double>> samples(datasetBatch.getRows(), std::vector<double>(getDatasetSampleSize()));
     for(unsigned int i = 0; i < datasetBatch.getRows(); ++i)
-    {
-        std::vector<double> sample(getDatasetSampleSize());
         for(unsigned int j = 1; j < datasetBatch.getCols(); ++j)
-            sample.push_back(datasetBatch.getValue(i, j));
-        samples.push_back(sample);
-    }
+            samples[i][j - 1] = datasetBatch.getValue(i, j);
 
     return Matrix(datasetBatch.getRows(), getDatasetSampleSize(), samples);
 }

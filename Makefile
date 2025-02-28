@@ -7,6 +7,7 @@ LAYER_HPP = ${INCLUDE_PATH}/layer.hpp
 LAYER_UTILS_H = ${INCLUDE_PATH}/layer_utils.h
 CSV_UTILS_H = ${INCLUDE_PATH}/csv_utils.h
 ACTIVATION_H = ${INCLUDE_PATH}/activation.h
+LOSS_H = ${INCLUDE_PATH}/loss.h
 CONFIG_H = ${INCLUDE_PATH}/config.h
 ERROR_H = ${INCLUDE_PATH}/error.h
 
@@ -17,6 +18,7 @@ LAYER_CPP = ${SRC_PATH}/layer.cpp
 LAYER_UTILS_CPP = ${SRC_PATH}/layer_utils.cpp
 CSV_UTILS_CPP = ${SRC_PATH}/csv_utils.cpp
 ACTIVATION_CPP = ${SRC_PATH}/activation.cpp
+LOSS_CPP = ${SRC_PATH}/loss.cpp
 CONFIG_CPP = ${SRC_PATH}/config.cpp
 ERROR_CPP = ${SRC_PATH}/error.cpp
 
@@ -27,10 +29,11 @@ LAYER_O = ${OBJ_PATH}/layer.o
 LAYER_UTILS_O = ${OBJ_PATH}/layer_utils.o
 CSV_UTILS_O = ${OBJ_PATH}/csv_utils.o
 ACTIVATION_O = ${OBJ_PATH}/activation.o
+LOSS_O = ${OBJ_PATH}/loss.o
 CONFIG_O = ${OBJ_PATH}/config.o
 ERROR_O = ${OBJ_PATH}/error.o
 
-OBJS = ${MAIN_O} ${MATRIX_O} ${LAYER_O} ${LAYER_UTILS_O} ${CSV_UTILS_O} ${ACTIVATION_O} ${CONFIG_O} ${ERROR_O}
+OBJS = ${MAIN_O} ${MATRIX_O} ${LAYER_O} ${LAYER_UTILS_O} ${CSV_UTILS_O} ${ACTIVATION_O} ${LOSS_O} ${CONFIG_O} ${ERROR_O}
 
 OUT_PATH = ./bin/out
 TARGET = ${OUT_PATH}/nnfs
@@ -61,6 +64,9 @@ ${CSV_UTILS_O}: ${CSV_UTILS_CPP} ${CSV_UTILS_H} ${MATRIX_HPP} ${CONFIG_H} ${ERRO
 
 ${ACTIVATION_O}: ${ACTIVATION_CPP} ${ACTIVATION_H}
 	${CXX} ${CXXFLAGS} -I ${INCLUDE_PATH} -c ${ACTIVATION_CPP} -o ${ACTIVATION_O}
+
+${LOSS_O}: ${LOSS_CPP} ${LOSS_H} ${ERROR_H}
+	${CXX} ${CXXFLAGS} -I ${INCLUDE_PATH} -c ${LOSS_CPP} -o ${LOSS_O}
 
 ${CONFIG_O}: ${CONFIG_CPP} ${CONFIG_H}
 	$(CXX) $(CXXFLAGS) -I $(INCLUDE_PATH) -c ${CONFIG_CPP} -o ${CONFIG_O}

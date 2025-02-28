@@ -10,6 +10,7 @@ void throwCustomMismatchDimensionsError(std::string message, int row1, int col1,
 void throwFileCannotBeOpenedError(std::string filename);
 
 void throwValueCannotBeGreaterError(std::string valueName, int value, std::string thresholdName, int threshold);
+void throwValueMustBeEqualError(std::string valueName, int value, std::string thresholdName, int threshold);
 
 void throwDatasetEmptyError();
 

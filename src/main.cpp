@@ -30,6 +30,7 @@ int main()
         Matrix labels = getLabels(i, true);
 
         std::cout << "Epoch: " << i + 1 << std::endl;
+        std::cout << "Loss: " << calculateCategoricalLoss(&activation3Outputs, &labels) << std::endl;
         std::cout << "Accuracy: " << calculateAccuracy(&activation3Outputs, &labels) << std::endl << std::endl;
     }
     

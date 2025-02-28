@@ -13,4 +13,6 @@ extern const std::string testDataset;
 
 extern const unsigned int batchSize;
 
+extern const double epsilon;
+
 #endif

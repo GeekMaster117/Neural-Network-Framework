@@ -1,6 +1,27 @@
 #include "loss.h"
 
+#include <cmath>
+
+#include "config.h"
 #include "error.h"
+
+double calculateCategoricalLoss(Matrix* outputs, Matrix* labels)
+{
+    if(outputs -> getRows() != labels -> getRows())
+        throwValueMustBeEqualError("Outputs Rows", outputs -> getRows(), "Labels Rows", labels -> getRows());
+
+    double negLogSum = 0.00;
+    for(unsigned int i = 0; i < outputs -> getRows(); ++i)
+    {
+        double confidence = outputs -> getValue(i, labels -> getValue(i, 0));
+        confidence = std::max(epsilon, confidence);
+        confidence = std::min(confidence, 1 - epsilon);
+
+        negLogSum += -log(confidence);
+    }
+
+    return negLogSum / (outputs -> getRows());
+}
 
 double calculateAccuracy(Matrix* outputs, Matrix* labels)
 {

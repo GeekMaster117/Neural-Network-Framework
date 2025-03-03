@@ -5,11 +5,9 @@
 #include "layer_utils.h"
 #include "csv_utils.h"
 #include "activation.h"
-#include "loss.h"
 
 int main()
 {
-
     Layer layer1 = Layer(784, 256);
     Layer layer2 = Layer(256, 256);
     Layer layer3 = Layer(256, 10);

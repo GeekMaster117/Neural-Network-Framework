@@ -29,7 +29,13 @@ int main()
 
         std::cout << "Epoch: " << i + 1 << std::endl;
         std::cout << "Loss: " << calculateCategoricalLoss(&activation3Outputs, &labels) << std::endl;
-        std::cout << "Accuracy: " << calculateAccuracy(&activation3Outputs, &labels) << std::endl << std::endl;
+        std::cout << "Accuracy: " << calculateAccuracy(&activation3Outputs, &labels) << std::endl;
+
+        std::cout << "Training..." << std::endl;
+
+        activationSoftmaxCategoricalLossBackward(&activation3Outputs, &labels);
+
+        std::cout << "Training Complete" << std::endl << std::endl;
     }
     
     return 0;

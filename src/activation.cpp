@@ -89,7 +89,7 @@ Matrix activationSoftmaxCategoricalLossBackward(Matrix* softmaxOutputs, Matrix* 
     for(unsigned int i = 0; i < softmaxOutputs -> getRows(); ++i)
         for(unsigned int j = 0; j < softmaxOutputs -> getCols(); ++j)
         {
-            int label = static_cast<int>(labels -> getValue(i, 0));
+            unsigned int label = static_cast<int>(labels -> getValue(i, 0));
             if(label < 0)
                 throwValueCannotBeLesserError("Label", label, "Zero", 0);
             if(label >= softmaxOutputs -> getCols())

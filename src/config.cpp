@@ -17,3 +17,5 @@ const std::string testDataset = "data/mnist_test.csv";
 const unsigned int batchSize = 128;
 
 const double epsilon = 0.0000001;
+
+const double learningRate = -0.01;

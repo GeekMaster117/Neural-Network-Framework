@@ -79,27 +79,43 @@ double calculateAccuracy(Matrix* outputs, Matrix* labels)
     return (static_cast<double>(correctPredictions) / static_cast<double>(outputs -> getRows())) * 100.00;
 }
 
-Matrix activationSoftmaxCategoricalLossBackward(Matrix* softmaxOutputs, Matrix* labels)
+Matrix activationReLUBackward(Matrix* dLoss_dOutputs)
 {
-    if(softmaxOutputs -> getRows() != labels -> getRows())
-        throwValueMustBeEqualError("Softmax Outputs Rows", softmaxOutputs -> getRows(), "Labels Rows", labels -> getRows());
+    std::vector<std::vector<double>> dLoss_dInputs(dLoss_dOutputs -> getRows(), std::vector<double>(dLoss_dOutputs -> getCols()));
+    for(unsigned int i = 0; i < dLoss_dOutputs -> getRows(); ++i)
+        for(unsigned int j = 0; j < dLoss_dOutputs -> getCols(); ++j)
+        {
+            double value = dLoss_dOutputs -> getValue(i, j);
+            if(value < 0)
+                dLoss_dInputs[i][j] = 0;
+            else
+                dLoss_dInputs[i][j] = value;
+        }
 
-    std::vector<std::vector<double>> dLoss_dOutputs = softmaxOutputs -> getVector();
+    return Matrix(dLoss_dOutputs -> getRows(), dLoss_dOutputs -> getCols(), dLoss_dInputs);
+}
 
-    for(unsigned int i = 0; i < softmaxOutputs -> getRows(); ++i)
-        for(unsigned int j = 0; j < softmaxOutputs -> getCols(); ++j)
+Matrix activationSoftmaxCategoricalLossBackward(Matrix* outputs, Matrix* labels)
+{
+    if(outputs -> getRows() != labels -> getRows())
+        throwValueMustBeEqualError("Softmax Outputs Rows", outputs -> getRows(), "Labels Rows", labels -> getRows());
+
+    std::vector<std::vector<double>> dLoss_dOutputs = outputs -> getVector();
+
+    for(unsigned int i = 0; i < outputs -> getRows(); ++i)
+        for(unsigned int j = 0; j < outputs -> getCols(); ++j)
         {
             unsigned int label = static_cast<int>(labels -> getValue(i, 0));
             if(label < 0)
                 throwValueCannotBeLesserError("Label", label, "Zero", 0);
-            if(label >= softmaxOutputs -> getCols())
-                throwValueCannotBeGreaterError("Label", label, "Softmax Outputs Columns", softmaxOutputs -> getCols());
+            if(label >= outputs -> getCols())
+                throwValueCannotBeGreaterError("Label", label, "Softmax Outputs Columns", outputs -> getCols());
 
             if(j == label)
                 dLoss_dOutputs[i][j] -= 1;
 
-            dLoss_dOutputs[i][j] /= softmaxOutputs -> getRows();
+            dLoss_dOutputs[i][j] /= outputs -> getRows();
         }
 
-    return Matrix(softmaxOutputs -> getRows(), softmaxOutputs -> getCols(), dLoss_dOutputs);
+    return Matrix(outputs -> getRows(), outputs -> getCols(), dLoss_dOutputs);
 }

@@ -15,6 +15,8 @@ class Layer
         Matrix getBiases();
 
         Matrix forward(Matrix* inputs);
+
+        Matrix backward(Matrix* inputs, Matrix* dLoss_dOutputs);
 };
 
 #endif

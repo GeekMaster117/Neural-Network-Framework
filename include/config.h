@@ -15,4 +15,6 @@ extern const unsigned int batchSize;
 
 extern const double epsilon;
 
+extern const double learningRate;
+
 #endif

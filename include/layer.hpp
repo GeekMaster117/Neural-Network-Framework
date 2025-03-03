@@ -16,7 +16,7 @@ class Layer
 
         Matrix forward(Matrix* inputs);
 
-        Matrix backward(Matrix* inputs, Matrix* dLoss_dOutputs);
+        Matrix backward(Matrix* inputs, Matrix* dLoss_dOutputs, int epoch);
 };
 
 #endif

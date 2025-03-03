@@ -12,11 +12,12 @@ int main()
     Layer layer2 = Layer(256, 256);
     Layer layer3 = Layer(256, 10);
 
-    for(unsigned int i = 0; i < getBatchCount(true); ++i)
+    for(unsigned int epoch = 0; epoch < getBatchCount(true); ++epoch)
     {
-        Matrix inputs = getSamples(i, true);
+        Matrix inputs = getSamples(epoch, true);
+        Matrix inputsNormalized = inputs.div(255.00);
 
-        Matrix layer1Outputs = layer1.forward(&inputs);
+        Matrix layer1Outputs = layer1.forward(&inputsNormalized);
         Matrix activation1Outputs = activationReLU(&layer1Outputs);
 
         Matrix layer2Outputs = layer2.forward(&activation1Outputs);
@@ -25,22 +26,22 @@ int main()
         Matrix layer3Outputs = layer3.forward(&activation2Outputs);
         Matrix activation3Outputs = activationSoftmax(&layer3Outputs);
     
-        Matrix labels = getLabels(i, true);
+        Matrix labels = getLabels(epoch, true);
 
-        std::cout << "Epoch: " << i + 1 << std::endl;
+        std::cout << "Epoch: " << epoch + 1 << std::endl;
         std::cout << "Loss: " << calculateCategoricalLoss(&activation3Outputs, &labels) << std::endl;
         std::cout << "Accuracy: " << calculateAccuracy(&activation3Outputs, &labels) << std::endl;
 
         std::cout << "Training..." << std::endl;
 
         Matrix dLoss_dLayer3Outputs = activationSoftmaxCategoricalLossBackward(&activation3Outputs, &labels);
-        Matrix dLoss_dactivation2Outputs = layer3.backward(&activation2Outputs, &dLoss_dLayer3Outputs);
+        Matrix dLoss_dactivation2Outputs = layer3.backward(&activation2Outputs, &dLoss_dLayer3Outputs, epoch);
         
-        Matrix dLoss_dLayer2Outputs = activationReLUBackward(&dLoss_dactivation2Outputs);
-        Matrix dLoss_dactivation1Outputs = layer2.backward(&activation1Outputs, &dLoss_dLayer2Outputs);
+        Matrix dLoss_dLayer2Outputs = activationReLUBackward(&layer2Outputs, &dLoss_dactivation2Outputs);
+        Matrix dLoss_dactivation1Outputs = layer2.backward(&activation1Outputs, &dLoss_dLayer2Outputs, epoch);
 
-        Matrix dLoss_dLayer1Outputs = activationReLUBackward(&dLoss_dactivation1Outputs);
-        layer1.backward(&inputs, &dLoss_dLayer1Outputs);
+        Matrix dLoss_dLayer1Outputs = activationReLUBackward(&layer1Outputs, &dLoss_dactivation1Outputs);
+        layer1.backward(&inputsNormalized, &dLoss_dLayer1Outputs, epoch);
 
         std::cout << "Training Complete" << std::endl << std::endl;
     }

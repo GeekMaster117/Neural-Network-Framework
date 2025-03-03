@@ -8,9 +8,9 @@
 
 Matrix::Matrix(unsigned int rows, unsigned int cols, std::vector<double>& vector): rows(rows), cols(cols), vector(vector) {}
 
-Matrix::Matrix(unsigned int rows, unsigned int cols): rows(rows), cols(cols), vector(rows * cols) {}
+Matrix::Matrix(unsigned int rows, unsigned int cols): rows(rows), cols(cols), vector(rows * cols, 0.00) {}
 
-Matrix::Matrix(unsigned int rows, unsigned int cols, std::vector<std::vector<double>>& vector): rows(rows), cols(cols), vector(rows * cols)
+Matrix::Matrix(unsigned int rows, unsigned int cols, std::vector<std::vector<double>>& vector): rows(rows), cols(cols), vector(rows * cols, 0.00)
 {
     this -> inputVector(vector);
 }

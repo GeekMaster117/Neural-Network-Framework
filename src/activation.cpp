@@ -49,7 +49,13 @@ double calculateCategoricalLoss(Matrix* outputs, Matrix* labels)
     double negLogSum = 0.00;
     for(unsigned int i = 0; i < outputs -> getRows(); ++i)
     {
-        double confidence = outputs -> getValue(i, labels -> getValue(i, 0));
+        unsigned int label = static_cast<unsigned int>(labels -> getValue(i, 0));
+        if(label < 0)
+            throwValueCannotBeLesserError("Label", label, "Zero", 0);
+        if(label >= outputs -> getCols())
+            throwValueCannotBeGreaterError("Label", label, "Softmax Outputs Columns", outputs -> getCols());
+
+        double confidence = outputs -> getValue(i, label);
         confidence = std::max(epsilon, confidence);
         confidence = std::min(confidence, 1 - epsilon);
 
@@ -79,17 +85,17 @@ double calculateAccuracy(Matrix* outputs, Matrix* labels)
     return (static_cast<double>(correctPredictions) / static_cast<double>(outputs -> getRows())) * 100.00;
 }
 
-Matrix activationReLUBackward(Matrix* dLoss_dOutputs)
+Matrix activationReLUBackward(Matrix* inputs, Matrix* dLoss_dOutputs)
 {
     std::vector<std::vector<double>> dLoss_dInputs(dLoss_dOutputs -> getRows(), std::vector<double>(dLoss_dOutputs -> getCols()));
     for(unsigned int i = 0; i < dLoss_dOutputs -> getRows(); ++i)
         for(unsigned int j = 0; j < dLoss_dOutputs -> getCols(); ++j)
         {
-            double value = dLoss_dOutputs -> getValue(i, j);
+            double value = inputs -> getValue(i, j);
             if(value < 0)
                 dLoss_dInputs[i][j] = 0;
             else
-                dLoss_dInputs[i][j] = value;
+                dLoss_dInputs[i][j] = dLoss_dOutputs -> getValue(i, j);
         }
 
     return Matrix(dLoss_dOutputs -> getRows(), dLoss_dOutputs -> getCols(), dLoss_dInputs);
@@ -105,7 +111,7 @@ Matrix activationSoftmaxCategoricalLossBackward(Matrix* outputs, Matrix* labels)
     for(unsigned int i = 0; i < outputs -> getRows(); ++i)
         for(unsigned int j = 0; j < outputs -> getCols(); ++j)
         {
-            unsigned int label = static_cast<int>(labels -> getValue(i, 0));
+            unsigned int label = static_cast<unsigned int>(labels -> getValue(i, 0));
             if(label < 0)
                 throwValueCannotBeLesserError("Label", label, "Zero", 0);
             if(label >= outputs -> getCols())

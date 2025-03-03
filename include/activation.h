@@ -9,7 +9,7 @@ Matrix activationSoftmax(Matrix* inputs);
 double calculateCategoricalLoss(Matrix* outputs, Matrix* labels);
 double calculateAccuracy(Matrix* outputs, Matrix* labels);
 
-Matrix activationReLUBackward(Matrix* dLoss_dOutputs);
+Matrix activationReLUBackward(Matrix* inputs, Matrix* dLoss_dOutputs);
 Matrix activationSoftmaxCategoricalLossBackward(Matrix* outputs, Matrix* labels);
 
 #endif

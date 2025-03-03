@@ -21,6 +21,11 @@ void throwFileCannotBeOpenedError(std::string filename)
     throw std::runtime_error("Could not open file " + filename);
 }
 
+void throwValueCannotBeLesserError(std::string valueName, int value, std::string thresholdName, int threshold)
+{
+    throw std::invalid_argument(valueName + " " + std::to_string(value) + " cannot be lesser than " + thresholdName + " " + std::to_string(threshold));
+}
+
 void throwValueCannotBeGreaterError(std::string valueName, int value, std::string thresholdName, int threshold)
 {
     throw std::invalid_argument(valueName + " " + std::to_string(value) + " cannot be greater than " + thresholdName + " " + std::to_string(threshold));

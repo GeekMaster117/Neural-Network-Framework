@@ -37,6 +37,10 @@ class Matrix
         Matrix mul(Matrix* matrix);
         Matrix mul(Matrix* matrix, bool broadcast);
 
+        Matrix div(double value);
+        Matrix div(Matrix* matrix);
+        Matrix div(Matrix* matrix, bool broadcast);
+
         Matrix dot(Matrix* matrix);
 
         Matrix transpose();

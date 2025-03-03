@@ -119,8 +119,8 @@ Matrix Matrix::add(Matrix* matrix, bool broadcast)
             unsigned int inputMatrixRow = (matrix -> rows == 1) ? 0 : i;
             unsigned int inputMatrixCol = (matrix -> cols == 1) ? 0 : j;
 
-            resultVector[(i * this -> cols) + j] = this -> vector[(thisMatrixRow * this -> cols) + thisMatrixCol] + 
-            matrix -> vector[(inputMatrixRow * this -> cols) + inputMatrixCol];
+            resultVector[(i * resultCols) + j] = this -> vector[(thisMatrixRow * this -> cols) + thisMatrixCol] + 
+            matrix -> vector[(inputMatrixRow * matrix -> cols) + inputMatrixCol];
         }
     }
 
@@ -176,8 +176,8 @@ Matrix Matrix::sub(Matrix* matrix, bool broadcast)
             unsigned int inputMatrixRow = (matrix -> rows == 1) ? 0 : i;
             unsigned int inputMatrixCol = (matrix -> cols == 1) ? 0 : j;
 
-            resultVector[(i * this -> cols) + j] = this -> vector[(thisMatrixRow * this -> cols) + thisMatrixCol] -
-            matrix -> vector[(inputMatrixRow * this -> cols) + inputMatrixCol];
+            resultVector[(i * resultCols) + j] = this -> vector[(thisMatrixRow * this -> cols) + thisMatrixCol] -
+            matrix -> vector[(inputMatrixRow * matrix -> cols) + inputMatrixCol];
         }
     }
 
@@ -202,7 +202,7 @@ Matrix Matrix::mul(Matrix* matrix)
     std::vector<double> resultVector((this -> rows) * (this -> cols));
 
     for(unsigned int i = 0; i < (this -> rows) * (this -> cols); ++i)
-            resultVector[i] = (this -> vector[i]) * (matrix -> vector[i]);
+        resultVector[i] = (this -> vector[i]) * (matrix -> vector[i]);
 
     return Matrix(this -> rows, this -> cols, resultVector);
 }
@@ -233,8 +233,65 @@ Matrix Matrix::mul(Matrix* matrix, bool broadcast)
             unsigned int inputMatrixRow = (matrix -> rows == 1) ? 0 : i;
             unsigned int inputMatrixCol = (matrix -> cols == 1) ? 0 : j;
 
-            resultVector[(i * this -> cols) + j] = this -> vector[(thisMatrixRow * this -> cols) + thisMatrixCol] *
-            matrix -> vector[(inputMatrixRow * this -> cols) + inputMatrixCol];
+            resultVector[(i * resultCols) + j] = this -> vector[(thisMatrixRow * this -> cols) + thisMatrixCol] *
+            matrix -> vector[(inputMatrixRow * matrix -> cols) + inputMatrixCol];
+        }
+    }
+
+    return Matrix(resultRows, resultCols, resultVector);
+}
+
+Matrix Matrix::div(double value)
+{
+    std::vector<double> resultVector((this -> rows) * (this -> cols));
+
+    for(unsigned int i = 0; i < (this -> rows) * (this -> cols); ++i)
+            resultVector[i] = (this -> vector[i]) / value;
+
+    return Matrix(this -> getRows(), this -> getCols(), resultVector);
+}
+
+Matrix Matrix::div(Matrix* matrix)
+{
+    if(this -> rows != matrix -> rows || this -> cols != matrix -> cols)
+        throwMismatchDimensionsError(this -> rows, this -> cols, matrix -> rows, matrix -> cols);
+
+    std::vector<double> resultVector((this -> rows) * (this -> cols));
+
+    for(unsigned int i = 0; i < (this -> rows) * (this -> cols); ++i)
+        resultVector[i] = (this -> vector[i]) / (matrix -> vector[i]);
+
+    return Matrix(this -> rows, this -> cols, resultVector);
+}
+
+Matrix Matrix::div(Matrix* matrix, bool broadcast)
+{
+    if(!broadcast || (this -> rows == matrix -> rows && this -> cols == matrix -> cols))
+        return this -> div(matrix);
+
+    if((this -> rows != matrix -> rows && this -> cols != matrix -> cols)
+    ||
+    (this -> rows != 1 && this -> cols != 1 && matrix -> rows != 1 && matrix -> cols != 1))
+        throwCustomMismatchDimensionsError("Neither Matrice could not be broadcast.\n"
+        "Atleast one of the dimensions should be same and the other dimension of the smaller matrix should be 1.", 
+        this -> rows, this -> cols, matrix -> rows, matrix -> cols);
+
+    unsigned int resultRows = std::max(this -> rows, matrix -> rows);
+    unsigned int resultCols = std::max(this -> cols, matrix -> cols);
+
+    std::vector<double> resultVector(resultRows * resultCols);
+
+    for (unsigned int i = 0; i < resultRows; ++i) 
+    {
+        for (unsigned int j = 0; j < resultCols; ++j) 
+        {
+            unsigned int thisMatrixRow = (this -> rows == 1) ? 0 : i;
+            unsigned int thisMatrixCol = (this -> cols == 1) ? 0 : j;
+            unsigned int inputMatrixRow = (matrix -> rows == 1) ? 0 : i;
+            unsigned int inputMatrixCol = (matrix -> cols == 1) ? 0 : j;
+
+            resultVector[(i * resultCols) + j] = this -> vector[(thisMatrixRow * this -> cols) + thisMatrixCol] /
+            matrix -> vector[(inputMatrixRow * matrix -> cols) + inputMatrixCol];
         }
     }
 

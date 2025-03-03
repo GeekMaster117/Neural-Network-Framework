@@ -20,3 +20,4 @@ const double epsilon = 0.0000001;
 
 const double learningRate = 0.01;
 const double decay = 0.001;
+const double momentum = 0.5;

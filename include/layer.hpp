@@ -8,6 +8,9 @@ class Layer
     private:
         Matrix weights;
         Matrix biases;
+
+        Matrix weightMomentums;
+        Matrix biasMomentums;
     public:
         Layer(unsigned int inputNeurons, unsigned int outputNeurons);
 

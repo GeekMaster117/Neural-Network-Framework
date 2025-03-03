@@ -17,5 +17,6 @@ extern const double epsilon;
 
 extern const double learningRate;
 extern const double decay;
+extern const double momentum;
 
 #endif

@@ -94,6 +94,28 @@ Matrix readDataset(unsigned int startIndex, unsigned int endIndex, std::string d
     return Matrix(std::min(endIndex - startIndex, getDatasetSize(datasetName) - startIndex), getDatasetSampleSize(datasetName), dataset);
 }
 
+void writeDataset(Matrix* matrix, std::string datasetName)
+{
+    std::ofstream file(datasetName);
+    if(!file.is_open())
+        throwFileCannotBeOpenedError(datasetName);
+
+    file << "row\\col";
+    for(unsigned int i = 0; i < matrix -> getCols(); ++i)
+        file << "," << i + 1;
+    file << std::endl;
+
+    for(unsigned int i = 0; i < matrix -> getRows(); ++i)
+    {
+        file << i + 1;
+        for(unsigned int j = 0; j < matrix -> getCols(); ++j)
+            file << "," << matrix -> getValue(i, j);
+        file << std::endl;
+    }
+
+    file.close();
+}
+
 unsigned int getBatchCount(std::string datasetName)
 {
     unsigned int datasetSize = getDatasetSize(datasetName);

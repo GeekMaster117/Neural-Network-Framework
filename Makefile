@@ -11,7 +11,7 @@ CONFIG_H = ${INCLUDE_PATH}/config.h
 ERROR_H = ${INCLUDE_PATH}/error.h
 
 SRC_PATH = ./src
-MAIN_CPP = ${SRC_PATH}/main.cpp
+TRAIN_CPP = ${SRC_PATH}/train.cpp
 MATRIX_CPP = ${SRC_PATH}/matrix.cpp
 LAYER_CPP = ${SRC_PATH}/layer.cpp
 LAYER_UTILS_CPP = ${SRC_PATH}/layer_utils.cpp
@@ -21,7 +21,7 @@ CONFIG_CPP = ${SRC_PATH}/config.cpp
 ERROR_CPP = ${SRC_PATH}/error.cpp
 
 OBJ_PATH = ./bin/obj
-MAIN_O = ${OBJ_PATH}/main.o
+TRAIN_O = ${OBJ_PATH}/train.o
 MATRIX_O = ${OBJ_PATH}/matrix.o
 LAYER_O = ${OBJ_PATH}/layer.o
 LAYER_UTILS_O = ${OBJ_PATH}/layer_utils.o
@@ -30,13 +30,23 @@ ACTIVATION_O = ${OBJ_PATH}/activation.o
 CONFIG_O = ${OBJ_PATH}/config.o
 ERROR_O = ${OBJ_PATH}/error.o
 
-OBJS = ${MAIN_O} ${MATRIX_O} ${LAYER_O} ${LAYER_UTILS_O} ${CSV_UTILS_O} ${ACTIVATION_O} ${CONFIG_O} ${ERROR_O}
-
 OUT_PATH = ./bin/out
-TARGET = ${OUT_PATH}/nnfs
+TRAIN = ${OUT_PATH}/train
 
-$(TARGET): $(OBJ_PATH) $(OUT_PATH) $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) ${OBJS}
+DATA_PATH = ./data
+LAYER1_WEIGHTS = $(DATA_PATH)/layer1_weights.csv
+LAYER1_BIASES = $(DATA_PATH)/layer1_biases.csv
+LAYER2_WEIGHTS = $(DATA_PATH)/layer2_weights.csv
+LAYER2_BIASES = $(DATA_PATH)/layer2_biases.csv
+LAYER3_WEIGHTS = $(DATA_PATH)/layer3_weights.csv
+LAYER3_BIASES = $(DATA_PATH)/layer3_biases.csv
+
+PARAMS = $(LAYER1_WEIGHTS) $(LAYER1_BIASES) $(LAYER2_WEIGHTS) $(LAYER2_BIASES) $(LAYER3_WEIGHTS) $(LAYER3_BIASES)
+
+OBJS = ${TRAIN_O} ${MATRIX_O} ${LAYER_O} ${LAYER_UTILS_O} ${CSV_UTILS_O} ${ACTIVATION_O} ${CONFIG_O} ${ERROR_O}
+
+$(TRAIN): $(OBJ_PATH) $(OUT_PATH) ${DATA_PATH} $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(TRAIN) ${OBJS}
 
 $(OBJ_PATH):
 	mkdir -p $(OBJ_PATH)
@@ -44,8 +54,11 @@ $(OBJ_PATH):
 $(OUT_PATH):
 	mkdir -p $(OUT_PATH)
 
-${MAIN_O}: ${MAIN_CPP} ${LAYER_HPP} ${LAYER_UTILS_HPP} ${CSV_UTILS_H} ${ACTIVATION_HPP} ${CONFIG_H}
-	$(CXX) $(CXXFLAGS) -I $(INCLUDE_PATH) -c ${MAIN_CPP} -o ${MAIN_O}
+$(DATA_PATH):
+	mkdir -p $(DATA_PATH)
+
+${TRAIN_O}: ${TRAIN_CPP} ${LAYER_HPP} ${LAYER_UTILS_HPP} ${CSV_UTILS_H} ${ACTIVATION_HPP} ${CONFIG_H}
+	$(CXX) $(CXXFLAGS) -I $(INCLUDE_PATH) -c ${TRAIN_CPP} -o ${TRAIN_O}
 
 ${MATRIX_O}: ${MATRIX_CPP} ${MATRIX_HPP} ${ERROR_H} ${CONFIG_H}
 	$(CXX) $(CXXFLAGS) -I $(INCLUDE_PATH) -c ${MATRIX_CPP} -o ${MATRIX_O}
@@ -68,11 +81,14 @@ ${CONFIG_O}: ${CONFIG_CPP} ${CONFIG_H}
 ${ERROR_O}: ${ERROR_CPP} ${ERROR_H}
 	$(CXX) $(CXXFLAGS) -I $(INCLUDE_PATH) -c ${ERROR_CPP} -o ${ERROR_O}
 
-run:
-	${TARGET}
+train:
+	${TRAIN}
 
-clean:
-	rm -f $(TARGET) $(OBJS)
+clean-bin:
+	rm -f $(TRAIN) $(OBJS)
 
-debug-run:
-	gdb -ex run --args ${TARGET}
+clean-params:
+	rm -f $(PARAMS)
+
+debug-train:
+	gdb -ex run --args ${TRAIN}

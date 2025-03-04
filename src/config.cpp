@@ -11,15 +11,15 @@ double randomGenStdDeviation(unsigned int inputs)
     return std::sqrt(2.00 / inputs);
 }
 
-const std::string trainDataset = "data/mnist_train.csv";
-const std::string testDataset = "data/mnist_test.csv";
+const std::string trainDatasetPath = "data/mnist_train.csv";
+const std::string testDatasetPath = "data/mnist_test.csv";
 
-const std::string layer1Weights = "data/layer1_weights.csv";
-const std::string layer1Biases = "data/layer1_biases.csv";
-const std::string layer2Weights = "data/layer2_weights.csv";
-const std::string layer2Biases = "data/layer2_biases.csv";
-const std::string layer3Weights = "data/layer3_weights.csv";
-const std::string layer3Biases = "data/layer3_biases.csv";
+const std::string layer1WeightsPath = "data/layer1_weights.csv";
+const std::string layer1BiasesPath = "data/layer1_biases.csv";
+const std::string layer2WeightsPath = "data/layer2_weights.csv";
+const std::string layer2BiasesPath = "data/layer2_biases.csv";
+const std::string layer3WeightsPath = "data/layer3_weights.csv";
+const std::string layer3BiasesPath = "data/layer3_biases.csv";
 
 const unsigned int batchSize = 64;
 

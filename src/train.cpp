@@ -13,9 +13,9 @@ int main()
     Layer layer2 = Layer(256, 256);
     Layer layer3 = Layer(256, 10);
 
-    for(unsigned int epoch = 0; epoch < getBatchCount(trainDataset); ++epoch)
+    for(unsigned int epoch = 0; epoch < getBatchCount(trainDatasetPath); ++epoch)
     {
-        Matrix inputs = getSamples(epoch, trainDataset);
+        Matrix inputs = getSamples(epoch, trainDatasetPath);
         Matrix inputsNormalized = inputs.div(255.00);
 
         Matrix layer1Outputs = layer1.forward(&inputsNormalized);
@@ -27,7 +27,7 @@ int main()
         Matrix layer3Outputs = layer3.forward(&activation2Outputs);
         Matrix activation3Outputs = activationSoftmax(&layer3Outputs);
     
-        Matrix labels = getLabels(epoch, trainDataset);
+        Matrix labels = getLabels(epoch, trainDatasetPath);
 
         std::cout << "Epoch: " << epoch + 1 << std::endl;
         std::cout << "Loss: " << calculateCategoricalLoss(&activation3Outputs, &labels) << std::endl;
@@ -46,6 +46,21 @@ int main()
 
         std::cout << "Training Complete" << std::endl << std::endl;
     }
+
+    Matrix layer1Weights = layer1.getWeights();
+    writeDataset(&layer1Weights, layer1WeightsPath);
+    Matrix layer1Biases = layer1.getBiases();
+    writeDataset(&layer1Biases, layer1BiasesPath);
+
+    Matrix layer2Weights = layer2.getWeights();
+    writeDataset(&layer2Weights, layer2WeightsPath);
+    Matrix layer2Biases = layer2.getBiases();
+    writeDataset(&layer2Biases, layer2BiasesPath);
+
+    Matrix layer3Weights = layer3.getWeights();
+    writeDataset(&layer3Weights, layer3WeightsPath);
+    Matrix layer3Biases = layer3.getBiases();
+    writeDataset(&layer3Biases, layer3BiasesPath);
     
     return 0;
 }

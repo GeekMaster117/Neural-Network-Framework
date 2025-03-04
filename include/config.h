@@ -8,15 +8,15 @@ extern const unsigned int dotMulBlockSize;
 extern const double randomGenMean;
 double randomGenStdDeviation(unsigned int inputs);
 
-extern const std::string trainDataset;
-extern const std::string testDataset;
+extern const std::string trainDatasetPath;
+extern const std::string testDatasetPath;
 
-extern const std::string layer1Weights;
-extern const std::string layer1Biases;
-extern const std::string layer2Weights;
-extern const std::string layer2Biases;
-extern const std::string layer3Weights;
-extern const std::string layer3Biases;
+extern const std::string layer1WeightsPath;
+extern const std::string layer1BiasesPath;
+extern const std::string layer2WeightsPath;
+extern const std::string layer2BiasesPath;
+extern const std::string layer3WeightsPath;
+extern const std::string layer3BiasesPath;
 
 extern const unsigned int batchSize;
 

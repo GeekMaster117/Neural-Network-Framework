@@ -6,15 +6,15 @@
 #ifndef CSV_UTILS_H
 #define CSV_UTILS_H
 
-unsigned int getDatasetSize(bool isTrainDataset);
-unsigned int getDatasetSampleSize();
+unsigned int getDatasetSize(std::string datasetName);
+unsigned int getDatasetSampleSize(std::string datasetName);
 
-Matrix readDataset(unsigned int startIndex, unsigned int endIndex, bool isTrainDataset);
+Matrix readDataset(unsigned int startIndex, unsigned int endIndex, std::string datasetName);
 
-unsigned int getBatchCount(bool isTrainDataset);
-Matrix getDatasetBatch(unsigned int batchIndex, bool isTrainDataset);
+unsigned int getBatchCount(std::string datasetName);
+Matrix getDatasetBatch(unsigned int batchIndex, std::string datasetName);
 
-Matrix getLabels(unsigned int batchIndex, bool isTrainDataset);
-Matrix getSamples(unsigned int batchIndex, bool isTrainDataset);
+Matrix getLabels(unsigned int batchIndex, std::string datasetName);
+Matrix getSamples(unsigned int batchIndex, std::string datasetName);
 
 #endif

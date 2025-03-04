@@ -6,10 +6,8 @@
 #include "config.h"
 #include "error.h"
 
-unsigned int getDatasetSize(bool isTrainDataset)
+unsigned int getDatasetSize(std::string datasetName)
 {
-    std::string datasetName = isTrainDataset ? trainDataset : testDataset;
-
     std::ifstream file(datasetName);
     if(!file.is_open())
         throwFileCannotBeOpenedError(datasetName);
@@ -31,11 +29,11 @@ unsigned int getDatasetSize(bool isTrainDataset)
     return size;
 }
 
-unsigned int getDatasetSampleSize()
+unsigned int getDatasetSampleSize(std::string datasetName)
 {
-    std::ifstream file(trainDataset);
+    std::ifstream file(datasetName);
     if(!file.is_open())
-        throwFileCannotBeOpenedError(trainDataset);
+        throwFileCannotBeOpenedError(datasetName);
 
     std::string line;
 
@@ -53,12 +51,10 @@ unsigned int getDatasetSampleSize()
     return size;
 }
 
-Matrix readDataset(unsigned int startIndex, unsigned int endIndex, bool isTrainDataset)
+Matrix readDataset(unsigned int startIndex, unsigned int endIndex, std::string datasetName)
 {
     if(startIndex >= endIndex)
         throwValueCannotBeGreaterError("StartIndex", startIndex, "EndIndex", endIndex);
-
-    std::string datasetName = isTrainDataset ? trainDataset : testDataset;
 
     std::ifstream file(datasetName);
     if(!file.is_open())
@@ -70,7 +66,7 @@ Matrix readDataset(unsigned int startIndex, unsigned int endIndex, bool isTrainD
         if(line.empty())
             throwDatasetEmptyError();
 
-    std::vector<std::vector<double>> dataset(std::min(endIndex - startIndex, getDatasetSize(isTrainDataset) - startIndex), std::vector<double>(getDatasetSampleSize()));
+    std::vector<std::vector<double>> dataset(std::min(endIndex - startIndex, getDatasetSize(datasetName) - startIndex), std::vector<double>(getDatasetSampleSize(datasetName)));
     for(unsigned int currentIndex = 0; std::getline(file, line); ++currentIndex) 
     {
         if(currentIndex < startIndex)
@@ -95,12 +91,12 @@ Matrix readDataset(unsigned int startIndex, unsigned int endIndex, bool isTrainD
     if(dataset.empty())
         throwDatasetEmptyError();
 
-    return Matrix(std::min(endIndex - startIndex, getDatasetSize(isTrainDataset) - startIndex), getDatasetSampleSize(), dataset);
+    return Matrix(std::min(endIndex - startIndex, getDatasetSize(datasetName) - startIndex), getDatasetSampleSize(datasetName), dataset);
 }
 
-unsigned int getBatchCount(bool isTrainDataset)
+unsigned int getBatchCount(std::string datasetName)
 {
-    unsigned int datasetSize = getDatasetSize(isTrainDataset);
+    unsigned int datasetSize = getDatasetSize(datasetName);
     
     unsigned int batchCount = datasetSize % batchSize == 0 ? 0 : 1;
     batchCount += datasetSize / batchSize;
@@ -108,19 +104,19 @@ unsigned int getBatchCount(bool isTrainDataset)
     return batchCount;
 }
 
-Matrix getDatasetBatch(unsigned int batchIndex, bool isTrainDataset)
+Matrix getDatasetBatch(unsigned int batchIndex, std::string datasetName)
 {
-    unsigned int batchCount = getBatchCount(isTrainDataset);
+    unsigned int batchCount = getBatchCount(datasetName);
     if(batchIndex >= batchCount)
         throwValueCannotBeGreaterError("BatchIndex", batchIndex, "BatchCount", batchCount);
 
-    unsigned int datasetSize = getDatasetSize(isTrainDataset);
-    return readDataset(batchIndex * batchSize, std::min((batchIndex * batchSize) + batchSize, datasetSize), isTrainDataset);
+    unsigned int datasetSize = getDatasetSize(datasetName);
+    return readDataset(batchIndex * batchSize, std::min((batchIndex * batchSize) + batchSize, datasetSize), datasetName);
 }
 
-Matrix getLabels(unsigned int batchIndex, bool isTrainDataset)
+Matrix getLabels(unsigned int batchIndex, std::string datasetName)
 {
-    Matrix datasetBatch = getDatasetBatch(batchIndex, isTrainDataset);
+    Matrix datasetBatch = getDatasetBatch(batchIndex, datasetName);
  
     std::vector<std::vector<double>> labels(datasetBatch.getRows(), std::vector<double>(1));
     for(unsigned int i = 0; i < datasetBatch.getRows(); ++i)
@@ -129,14 +125,14 @@ Matrix getLabels(unsigned int batchIndex, bool isTrainDataset)
     return Matrix(datasetBatch.getRows(), 1, labels);
 }
 
-Matrix getSamples(unsigned int batchIndex, bool isTrainDataset)
+Matrix getSamples(unsigned int batchIndex, std::string datasetName)
 {
-    Matrix datasetBatch = getDatasetBatch(batchIndex, isTrainDataset);
+    Matrix datasetBatch = getDatasetBatch(batchIndex, datasetName);
 
-    std::vector<std::vector<double>> samples(datasetBatch.getRows(), std::vector<double>(getDatasetSampleSize()));
+    std::vector<std::vector<double>> samples(datasetBatch.getRows(), std::vector<double>(getDatasetSampleSize(datasetName)));
     for(unsigned int i = 0; i < datasetBatch.getRows(); ++i)
         for(unsigned int j = 1; j < datasetBatch.getCols(); ++j)
             samples[i][j - 1] = datasetBatch.getValue(i, j);
 
-    return Matrix(datasetBatch.getRows(), getDatasetSampleSize(), samples);
+    return Matrix(datasetBatch.getRows(), getDatasetSampleSize(datasetName), samples);
 }

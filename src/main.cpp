@@ -5,6 +5,7 @@
 #include "layer_utils.h"
 #include "csv_utils.h"
 #include "activation.h"
+#include "config.h"
 
 int main()
 {
@@ -12,9 +13,9 @@ int main()
     Layer layer2 = Layer(256, 256);
     Layer layer3 = Layer(256, 10);
 
-    for(unsigned int epoch = 0; epoch < getBatchCount(true); ++epoch)
+    for(unsigned int epoch = 0; epoch < getBatchCount(trainDataset); ++epoch)
     {
-        Matrix inputs = getSamples(epoch, true);
+        Matrix inputs = getSamples(epoch, trainDataset);
         Matrix inputsNormalized = inputs.div(255.00);
 
         Matrix layer1Outputs = layer1.forward(&inputsNormalized);
@@ -26,7 +27,7 @@ int main()
         Matrix layer3Outputs = layer3.forward(&activation2Outputs);
         Matrix activation3Outputs = activationSoftmax(&layer3Outputs);
     
-        Matrix labels = getLabels(epoch, true);
+        Matrix labels = getLabels(epoch, trainDataset);
 
         std::cout << "Epoch: " << epoch + 1 << std::endl;
         std::cout << "Loss: " << calculateCategoricalLoss(&activation3Outputs, &labels) << std::endl;

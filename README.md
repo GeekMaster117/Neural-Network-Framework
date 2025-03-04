@@ -1,1 +1,1 @@
-Dataset:- https://pjreddie.com/projects/mnist-in-csv/
+Dataset:- https://www.kaggle.com/datasets/oddrationale/mnist-in-csv

@@ -12,6 +12,7 @@ ERROR_H = ${INCLUDE_PATH}/error.h
 
 SRC_PATH = ./src
 TRAIN_CPP = ${SRC_PATH}/train.cpp
+TEST_CPP = $(SRC_PATH)/test.cpp
 MATRIX_CPP = ${SRC_PATH}/matrix.cpp
 LAYER_CPP = ${SRC_PATH}/layer.cpp
 LAYER_UTILS_CPP = ${SRC_PATH}/layer_utils.cpp
@@ -22,6 +23,7 @@ ERROR_CPP = ${SRC_PATH}/error.cpp
 
 OBJ_PATH = ./bin/obj
 TRAIN_O = ${OBJ_PATH}/train.o
+TEST_O = $(OBJ_PATH)/test.o
 MATRIX_O = ${OBJ_PATH}/matrix.o
 LAYER_O = ${OBJ_PATH}/layer.o
 LAYER_UTILS_O = ${OBJ_PATH}/layer_utils.o
@@ -32,13 +34,19 @@ ERROR_O = ${OBJ_PATH}/error.o
 
 OUT_PATH = ./bin/out
 TRAIN = ${OUT_PATH}/train
+TEST = $(OUT_PATH)/test
 
 PARAMS_PATH = ./data/params
 
-OBJS = ${TRAIN_O} ${MATRIX_O} ${LAYER_O} ${LAYER_UTILS_O} ${CSV_UTILS_O} ${ACTIVATION_O} ${CONFIG_O} ${ERROR_O}
+OBJS = ${MATRIX_O} ${LAYER_O} ${LAYER_UTILS_O} ${CSV_UTILS_O} ${ACTIVATION_O} ${CONFIG_O} ${ERROR_O}
+TRAIN_OBJS = $(TRAIN_O) $(OBJS)
+TEST_OBJS = $(TEST_O) $(OBJS)
 
-$(TRAIN): $(OBJ_PATH) $(OUT_PATH) ${PARAMS_PATH} $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(TRAIN) ${OBJS}
+$(TRAIN): $(OBJ_PATH) $(OUT_PATH) ${PARAMS_PATH} $(TRAIN_OBJS)
+	$(CXX) $(CXXFLAGS) -o $(TRAIN) $(TRAIN_OBJS)
+
+$(TEST): $(OBJ_PATH) $(OUT_PATH) ${PARAMS_PATH} $(TEST_OBJS)
+	$(CXX) $(CXXFLAGS) -o $(TRAIN) $(TEST_OBJS)
 
 $(OBJ_PATH):
 	mkdir -p $(OBJ_PATH)
@@ -51,6 +59,9 @@ $(PARAMS_PATH):
 
 ${TRAIN_O}: ${TRAIN_CPP} ${LAYER_HPP} ${LAYER_UTILS_HPP} ${CSV_UTILS_H} ${ACTIVATION_HPP} ${CONFIG_H}
 	$(CXX) $(CXXFLAGS) -I $(INCLUDE_PATH) -c ${TRAIN_CPP} -o ${TRAIN_O}
+
+${TEST_O}: $(TEST_CPP) $(CSV_UTILS_H)
+	$(CXX) $(CXXFLAGS) -I $(INCLUDE_PATH) -c ${TEST_CPP} -o ${TEST_O}
 
 ${MATRIX_O}: ${MATRIX_CPP} ${MATRIX_HPP} ${ERROR_H} ${CONFIG_H}
 	$(CXX) $(CXXFLAGS) -I $(INCLUDE_PATH) -c ${MATRIX_CPP} -o ${MATRIX_O}

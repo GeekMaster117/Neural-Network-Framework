@@ -6,6 +6,8 @@
 #include "error.h"
 #include "config.h"
 
+Matrix::Matrix(): rows(0), cols(0), vector(0, 0.00) {}
+
 Matrix::Matrix(unsigned int rows, unsigned int cols, std::vector<double>& vector): rows(rows), cols(cols), vector(vector) {}
 
 Matrix::Matrix(unsigned int rows, unsigned int cols): rows(rows), cols(cols), vector(rows * cols, 0.00) {}

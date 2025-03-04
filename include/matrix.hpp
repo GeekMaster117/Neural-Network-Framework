@@ -11,6 +11,7 @@ class Matrix
 
         Matrix(unsigned int rows, unsigned int cols, std::vector<double>& vector);
     public:
+        Matrix();
         Matrix(unsigned int rows, unsigned int cols);
         Matrix(unsigned int rows, unsigned int cols, std::vector<std::vector<double>>& vector);
         

@@ -11,6 +11,13 @@ double randomGenStdDeviation(unsigned int inputs);
 extern const std::string trainDataset;
 extern const std::string testDataset;
 
+extern const std::string layer1Weights;
+extern const std::string layer1Biases;
+extern const std::string layer2Weights;
+extern const std::string layer2Biases;
+extern const std::string layer3Weights;
+extern const std::string layer3Biases;
+
 extern const unsigned int batchSize;
 
 extern const double epsilon;

@@ -136,6 +136,17 @@ Matrix getDatasetBatch(unsigned int batchIndex, std::string datasetName)
     return readDataset(batchIndex * batchSize, std::min((batchIndex * batchSize) + batchSize, datasetSize), datasetName);
 }
 
+Matrix getLabels(std::string datasetName)
+{
+    Matrix dataset = readDataset(0, getDatasetSize(datasetName), datasetName);
+
+    std::vector<std::vector<double>> labels(dataset.getRows(), std::vector<double>(1));
+    for(unsigned int i = 0; i < dataset.getRows(); ++i)
+        labels[i][0] = dataset.getValue(i, 0);
+
+    return Matrix(dataset.getRows(), 1, labels);
+}
+
 Matrix getLabels(unsigned int batchIndex, std::string datasetName)
 {
     Matrix datasetBatch = getDatasetBatch(batchIndex, datasetName);
@@ -145,6 +156,18 @@ Matrix getLabels(unsigned int batchIndex, std::string datasetName)
         labels[i][0] = datasetBatch.getValue(i, 0);
 
     return Matrix(datasetBatch.getRows(), 1, labels);
+}
+
+Matrix getSamples(std::string datasetName)
+{
+    Matrix dataset = readDataset(0, getDatasetSize(datasetName), datasetName);
+
+    std::vector<std::vector<double>> samples(dataset.getRows(), std::vector<double>(getDatasetSampleSize(datasetName)));
+    for(unsigned int i = 0; i < dataset.getRows(); ++i)
+        for(unsigned int j = 1; j < dataset.getCols(); ++j)
+            samples[i][j - 1] = dataset.getValue(i, j);
+
+    return Matrix(dataset.getRows(), getDatasetSampleSize(datasetName), samples);
 }
 
 Matrix getSamples(unsigned int batchIndex, std::string datasetName)

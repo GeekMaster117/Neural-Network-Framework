@@ -15,7 +15,9 @@ void writeDataset(Matrix* matrix, std::string datasetName);
 unsigned int getBatchCount(std::string datasetName);
 Matrix getDatasetBatch(unsigned int batchIndex, std::string datasetName);
 
+Matrix getLabels(std::string datasetName);
 Matrix getLabels(unsigned int batchIndex, std::string datasetName);
+Matrix getSamples(std::string datasetName);
 Matrix getSamples(unsigned int batchIndex, std::string datasetName);
 
 #endif

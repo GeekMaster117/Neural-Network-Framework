@@ -33,19 +33,11 @@ ERROR_O = ${OBJ_PATH}/error.o
 OUT_PATH = ./bin/out
 TRAIN = ${OUT_PATH}/train
 
-DATA_PATH = ./data
-LAYER1_WEIGHTS = $(DATA_PATH)/layer1_weights.csv
-LAYER1_BIASES = $(DATA_PATH)/layer1_biases.csv
-LAYER2_WEIGHTS = $(DATA_PATH)/layer2_weights.csv
-LAYER2_BIASES = $(DATA_PATH)/layer2_biases.csv
-LAYER3_WEIGHTS = $(DATA_PATH)/layer3_weights.csv
-LAYER3_BIASES = $(DATA_PATH)/layer3_biases.csv
-
-PARAMS = $(LAYER1_WEIGHTS) $(LAYER1_BIASES) $(LAYER2_WEIGHTS) $(LAYER2_BIASES) $(LAYER3_WEIGHTS) $(LAYER3_BIASES)
+PARAMS_PATH = ./data/params
 
 OBJS = ${TRAIN_O} ${MATRIX_O} ${LAYER_O} ${LAYER_UTILS_O} ${CSV_UTILS_O} ${ACTIVATION_O} ${CONFIG_O} ${ERROR_O}
 
-$(TRAIN): $(OBJ_PATH) $(OUT_PATH) ${DATA_PATH} $(OBJS)
+$(TRAIN): $(OBJ_PATH) $(OUT_PATH) ${PARAMS_PATH} $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(TRAIN) ${OBJS}
 
 $(OBJ_PATH):
@@ -54,8 +46,8 @@ $(OBJ_PATH):
 $(OUT_PATH):
 	mkdir -p $(OUT_PATH)
 
-$(DATA_PATH):
-	mkdir -p $(DATA_PATH)
+$(PARAMS_PATH):
+	mkdir -p $(PARAMS_PATH)
 
 ${TRAIN_O}: ${TRAIN_CPP} ${LAYER_HPP} ${LAYER_UTILS_HPP} ${CSV_UTILS_H} ${ACTIVATION_HPP} ${CONFIG_H}
 	$(CXX) $(CXXFLAGS) -I $(INCLUDE_PATH) -c ${TRAIN_CPP} -o ${TRAIN_O}
@@ -63,7 +55,7 @@ ${TRAIN_O}: ${TRAIN_CPP} ${LAYER_HPP} ${LAYER_UTILS_HPP} ${CSV_UTILS_H} ${ACTIVA
 ${MATRIX_O}: ${MATRIX_CPP} ${MATRIX_HPP} ${ERROR_H} ${CONFIG_H}
 	$(CXX) $(CXXFLAGS) -I $(INCLUDE_PATH) -c ${MATRIX_CPP} -o ${MATRIX_O}
 
-${LAYER_O}: ${LAYER_CPP} ${LAYER_HPP} ${LAYER_UTILS_H} ${MATRIX_HPP}
+${LAYER_O}: ${LAYER_CPP} ${LAYER_HPP} ${LAYER_UTILS_H} ${CSV_UTILS_H} ${MATRIX_HPP}
 	$(CXX) $(CXXFLAGS) -I $(INCLUDE_PATH) -c ${LAYER_CPP} -o ${LAYER_O}
 
 ${LAYER_UTILS_O}: ${LAYER_UTILS_CPP} ${LAYER_UTILS_H} ${CONFIG_H} ${ERROR_H}
@@ -88,7 +80,7 @@ clean-bin:
 	rm -f $(TRAIN) $(OBJS)
 
 clean-params:
-	rm -f $(PARAMS)
+	rm -rf $(PARAMS_PATH)/*
 
 debug-train:
 	gdb -ex run --args ${TRAIN}

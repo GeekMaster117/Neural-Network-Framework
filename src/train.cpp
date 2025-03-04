@@ -47,20 +47,9 @@ int main()
         std::cout << "Training Complete" << std::endl << std::endl;
     }
 
-    Matrix layer1Weights = layer1.getWeights();
-    writeDataset(&layer1Weights, layer1WeightsPath);
-    Matrix layer1Biases = layer1.getBiases();
-    writeDataset(&layer1Biases, layer1BiasesPath);
-
-    Matrix layer2Weights = layer2.getWeights();
-    writeDataset(&layer2Weights, layer2WeightsPath);
-    Matrix layer2Biases = layer2.getBiases();
-    writeDataset(&layer2Biases, layer2BiasesPath);
-
-    Matrix layer3Weights = layer3.getWeights();
-    writeDataset(&layer3Weights, layer3WeightsPath);
-    Matrix layer3Biases = layer3.getBiases();
-    writeDataset(&layer3Biases, layer3BiasesPath);
+    layer1.saveParams("layer1");
+    layer2.saveParams("layer2");
+    layer3.saveParams("layer3");
     
     return 0;
 }

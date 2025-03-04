@@ -11,12 +11,7 @@ double randomGenStdDeviation(unsigned int inputs);
 extern const std::string trainDatasetPath;
 extern const std::string testDatasetPath;
 
-extern const std::string layer1WeightsPath;
-extern const std::string layer1BiasesPath;
-extern const std::string layer2WeightsPath;
-extern const std::string layer2BiasesPath;
-extern const std::string layer3WeightsPath;
-extern const std::string layer3BiasesPath;
+extern const std::string paramsPath;
 
 extern const unsigned int batchSize;
 

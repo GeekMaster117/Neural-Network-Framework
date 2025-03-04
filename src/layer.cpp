@@ -1,6 +1,7 @@
 #include "layer.hpp"
 
 #include "layer_utils.h"
+#include "csv_utils.h"
 #include "matrix.hpp"
 #include "config.h"
 
@@ -55,4 +56,10 @@ Matrix Layer::backward(Matrix* inputs, Matrix* dLoss_dOutputs, int epoch)
     this -> biases = this -> biases.add(&biasUpdates);
 
     return dLoss_dInputs;
+}
+
+void Layer::saveParams(std::string paramsName)
+{
+    writeDataset(&(this -> weights), paramsPath + "/" + paramsName + "_weights.csv");
+    writeDataset(&(this -> biases), paramsPath + "/" + paramsName + "_biases.csv");
 }

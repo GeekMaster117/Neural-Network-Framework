@@ -15,6 +15,11 @@ biases(Matrix(1, outputNeurons)),
 weightMomentums(Matrix(inputNeurons, outputNeurons)),
 biasMomentums(Matrix(1, outputNeurons)) {}
 
+Layer::Layer(unsigned int inputNeurons, unsigned int outputNeurons, Matrix* weights, Matrix* biases): weights(*weights), 
+biases(*biases),
+weightMomentums(Matrix(inputNeurons, outputNeurons)),
+biasMomentums(Matrix(1, outputNeurons)) {}
+
 Matrix Layer::getWeights()
 {
     return this -> weights;

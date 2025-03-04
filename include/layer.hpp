@@ -15,6 +15,7 @@ class Layer
         Matrix biasMomentums;
     public:
         Layer(unsigned int inputNeurons, unsigned int outputNeurons);
+        Layer(unsigned int inputNeurons, unsigned int outputNeurons, Matrix* weights, Matrix* biases);
 
         Matrix getWeights();
         Matrix getBiases();

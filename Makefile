@@ -85,7 +85,10 @@ ${ERROR_O}: ${ERROR_CPP} ${ERROR_H}
 	$(CXX) $(CXXFLAGS) -I $(INCLUDE_PATH) -c ${ERROR_CPP} -o ${ERROR_O}
 
 train:
-	${TRAIN}
+	$(TRAIN)
+
+test:
+	$(TEST)
 
 clean-bin:
 	rm -f $(TRAIN) $(OBJS)

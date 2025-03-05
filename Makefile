@@ -42,11 +42,9 @@ OBJS = ${MATRIX_O} ${LAYER_O} ${LAYER_UTILS_O} ${CSV_UTILS_O} ${ACTIVATION_O} ${
 TRAIN_OBJS = $(TRAIN_O) $(OBJS)
 TEST_OBJS = $(TEST_O) $(OBJS)
 
-$(TRAIN): $(OBJ_PATH) $(OUT_PATH) ${PARAMS_PATH} $(TRAIN_OBJS)
+compile: $(OBJ_PATH) $(OUT_PATH) ${PARAMS_PATH} $(TRAIN_OBJS) $(TEST_OBJS)
 	$(CXX) $(CXXFLAGS) -o $(TRAIN) $(TRAIN_OBJS)
-
-$(TEST): $(OBJ_PATH) $(OUT_PATH) ${PARAMS_PATH} $(TEST_OBJS)
-	$(CXX) $(CXXFLAGS) -o $(TRAIN) $(TEST_OBJS)
+	$(CXX) $(CXXFLAGS) -o $(TEST) $(TEST_OBJS)
 
 $(OBJ_PATH):
 	mkdir -p $(OBJ_PATH)
@@ -98,3 +96,6 @@ clean-params:
 
 debug-train:
 	gdb -ex run --args ${TRAIN}
+
+debug-test:
+	gdb -ex run --args ${TEST}

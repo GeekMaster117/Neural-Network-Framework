@@ -16,7 +16,7 @@ const std::string testDatasetPath = "data/mnist_test.csv";
 
 const std::string paramsPath = "data/params";
 
-const unsigned int chunkSize = 1000;
+const unsigned int chunkSize = 100;
 const unsigned int batchSize = 64;
 
 const double epsilon = 0.0000001;

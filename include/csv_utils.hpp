@@ -19,10 +19,13 @@ class CSV
         unsigned int readSampleSize();
         Matrix readDataset(unsigned int startIndex, unsigned int endIndex);
     public:
-        CSV(std::string datasetName, unsigned int initLoad);
+        CSV(std::string datasetName);
 
         unsigned int getDatasetSize();
         unsigned int getSampleSize();
+
+        unsigned int getChunkCount();
+        void loadChunk(unsigned int chunkIndex);
 
         unsigned int getBatchCount();
         Matrix getDatasetBatch(unsigned int batchIndex);

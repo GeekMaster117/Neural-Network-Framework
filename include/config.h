@@ -13,6 +13,7 @@ extern const std::string testDatasetPath;
 
 extern const std::string paramsPath;
 
+extern const unsigned int chunkSize;
 extern const unsigned int batchSize;
 
 extern const double epsilon;

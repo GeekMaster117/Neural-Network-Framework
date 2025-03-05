@@ -6,11 +6,11 @@
 #include "config.h"
 #include "error.h"
 
-CSV::CSV(std::string datasetName, unsigned int initLoad): datasetName(datasetName)
+CSV::CSV(std::string datasetName): datasetName(datasetName)
 {
     this -> datasetSize = this -> getDatasetSize();
     this -> sampleSize = this -> getSampleSize();
-    this -> dataset = this -> readDataset(0, initLoad < (this -> datasetSize) ? initLoad : (this -> datasetSize));
+    this -> dataset = this -> readDataset(0, chunkSize < (this -> datasetSize) ? chunkSize : (this -> datasetSize));
 }
 
 unsigned int CSV::readDatasetSize()
@@ -44,7 +44,7 @@ unsigned int CSV::readSampleSize()
 
     std::string line;
 
-    unsigned int size = -1;
+    unsigned int size = 0;
     if(std::getline(file, line))
     {
         if(line.empty())
@@ -54,6 +54,9 @@ unsigned int CSV::readSampleSize()
         std::string cell;
         for(; std::getline(ss, cell, ','); ++size);
     }
+
+    if(size != 0)
+        --size;
 
     return size;
 }
@@ -111,6 +114,25 @@ unsigned int CSV::getSampleSize()
     return this -> sampleSize;
 }
 
+unsigned int CSV::getChunkCount()
+{
+    unsigned int chunkCount = (this -> datasetSize) % chunkSize == 0 ? 0 : 1;
+    chunkCount += (this -> datasetSize) / chunkSize;
+
+    return chunkCount;
+}
+
+void CSV::loadChunk(unsigned int chunkIndex)
+{
+    unsigned int chunkCount = this -> getChunkCount();
+    if(chunkIndex >= chunkCount)
+        throwValueCannotBeGreaterError("BatchIndex", chunkIndex, "BatchCount", chunkCount);
+
+    unsigned int startIndex = chunkIndex * chunkSize, endIndex = std::min((chunkIndex * chunkSize) + chunkSize, datasetSize);
+
+    this -> dataset = this -> readDataset(startIndex, endIndex);
+}
+
 unsigned int CSV::getBatchCount()
 {
     unsigned int batchCount = (this -> dataset.getRows()) % batchSize == 0 ? 0 : 1;
@@ -121,15 +143,15 @@ unsigned int CSV::getBatchCount()
 
 Matrix CSV::getDatasetBatch(unsigned int batchIndex)
 {
-    unsigned int batchCount = getBatchCount();
+    unsigned int batchCount = this -> getBatchCount();
     if(batchIndex >= batchCount)
         throwValueCannotBeGreaterError("BatchIndex", batchIndex, "BatchCount", batchCount);
 
-    unsigned int startIndex = batchIndex * batchSize, endIndex = std::min((batchIndex * batchSize) + batchSize, datasetSize);
+    unsigned int startIndex = batchIndex * batchSize, endIndex = std::min((batchIndex * batchSize) + batchSize, this -> dataset.getRows());
 
     std::vector<std::vector<double>> batch(endIndex - startIndex, std::vector<double>((this -> sampleSize) + 1));
     for(unsigned int i = startIndex; i < endIndex; ++i)
-        for(unsigned int j = 0; j < (this -> sampleSize) + 1; ++i)
+        for(unsigned int j = 0; j < (this -> sampleSize) + 1; ++j)
             batch[i][j] = this -> dataset.getValue(i, j);
 
     return Matrix(endIndex - startIndex, (this -> sampleSize) + 1, batch);
@@ -137,12 +159,12 @@ Matrix CSV::getDatasetBatch(unsigned int batchIndex)
 
 Matrix CSV::getLabels()
 {
-    std::vector<std::vector<double>> labels(this -> datasetSize, std::vector<double>(1));
+    std::vector<std::vector<double>> labels(this -> dataset.getRows(), std::vector<double>(1));
 
-    for(unsigned int i = 0; i < this -> datasetSize; ++i)
+    for(unsigned int i = 0; i < this -> dataset.getRows(); ++i)
         labels[i][0] = this -> dataset.getValue(i, 0);
 
-    return Matrix(this -> datasetSize, 1, labels);
+    return Matrix(this -> dataset.getRows(), 1, labels);
 }
 
 Matrix CSV::getLabels(unsigned int batchIndex)
@@ -154,18 +176,18 @@ Matrix CSV::getLabels(unsigned int batchIndex)
     for(unsigned int i = 0; i < batch.getRows(); ++i)
         labels[i][0] = batch.getValue(i, 0);
 
-    return Matrix(this -> datasetSize, 1, labels);
+    return Matrix(batch.getRows(), 1, labels);
 }
 
 Matrix CSV::getSamples()
 {
-    std::vector<std::vector<double>> samples(this -> datasetSize, std::vector<double>(this -> sampleSize));
+    std::vector<std::vector<double>> samples(this -> dataset.getRows(), std::vector<double>(this -> sampleSize));
 
-    for(unsigned int i = 0; i < this -> datasetSize; ++i)
+    for(unsigned int i = 0; i < this -> dataset.getRows(); ++i)
         for(unsigned int j = 1; j < (this -> sampleSize) + 1; ++i)
             samples[i][j - 1] = this -> dataset.getValue(i, j);
 
-    return Matrix(this -> datasetSize, 1, samples);
+    return Matrix(this -> dataset.getRows(), 1, samples);
 }
 
 Matrix CSV::getSamples(unsigned int batchIndex)
@@ -178,7 +200,7 @@ Matrix CSV::getSamples(unsigned int batchIndex)
         for(unsigned int j = 1; j < batch.getCols(); ++j)
             samples[i][j - 1] = batch.getValue(i, j);
 
-    return Matrix(this -> datasetSize, 1, samples);
+    return Matrix(batch.getRows(), 1, samples);
 }
 
 unsigned int getDatasetSize(std::string datasetName)

@@ -110,12 +110,22 @@ unsigned int CSV::getSampleSize()
     return this -> sampleSize;
 }
 
+Matrix CSV::getDataset()
+{
+    return this -> dataset;
+}
+
 unsigned int CSV::getChunkCount()
 {
     unsigned int chunkCount = (this -> datasetSize) % chunkSize == 0 ? 0 : 1;
     chunkCount += (this -> datasetSize) / chunkSize;
 
     return chunkCount;
+}
+
+void CSV::loadAll()
+{
+    this -> dataset = this -> readDataset(0, this -> datasetSize);
 }
 
 void CSV::loadChunk(unsigned int chunkIndex)
@@ -180,7 +190,7 @@ Matrix CSV::getSamples()
     std::vector<std::vector<double>> samples(this -> dataset.getRows(), std::vector<double>(this -> sampleSize));
 
     for(unsigned int i = 0; i < this -> dataset.getRows(); ++i)
-        for(unsigned int j = 1; j < (this -> sampleSize) + 1; ++i)
+        for(unsigned int j = 1; j < (this -> sampleSize) + 1; ++j)
             samples[i][j - 1] = this -> dataset.getValue(i, j);
 
     return Matrix(this -> dataset.getRows(), this -> sampleSize, samples);

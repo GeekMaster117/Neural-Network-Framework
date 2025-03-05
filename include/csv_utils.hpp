@@ -23,8 +23,10 @@ class CSV
 
         unsigned int getDatasetSize();
         unsigned int getSampleSize();
+        Matrix getDataset();
 
         unsigned int getChunkCount();
+        void loadAll();
         void loadChunk(unsigned int chunkIndex);
 
         unsigned int getBatchCount();

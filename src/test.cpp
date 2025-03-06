@@ -50,6 +50,7 @@ int main()
     
     Matrix labels = dataset.getLabels();
 
+    std::cout << "Loss: " << calculateCategoricalLoss(&activation3Outputs, &labels) << std::endl;
     std::cout << "Accuracy: " << calculateAccuracy(&activation3Outputs, &labels) << std::endl;
 
     return 0;

@@ -1,7 +1,7 @@
 # Neural Network Framework
 
 ## What is Neural Network Framework?
-- A framework built from the ground up to use Neural Networks in C++
+- A framework built from the ground up to build Neural Networks in C++
 - Uses Adaptive Momentum for backwards propagation
   
 ## How to use the framework?
